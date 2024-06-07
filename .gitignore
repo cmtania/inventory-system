@@ -40,3 +40,19 @@ inventory-system-spa/typings
 # System files
 .DS_Store
 Thumbs.db
+
+# visual studio
+
+bin
+.vs/
+obj
+
+InventorySystem.Service/InventorySystem.Service/bin/Debug/net8.0
+InventorySystem.Service/InventorySystem.Service/bin/Debug/
+InventorySystem.Service/InventorySystem.Service/obj
+InventorySystem.Service/InventorySystem.Service/Logs
+
+# User-specific files
+*.user
+.vscode/diff
+.vscode
