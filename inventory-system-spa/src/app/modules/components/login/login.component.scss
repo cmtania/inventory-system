@@ -1,0 +1,32 @@
+.btn-color{
+    background-color: #C2DEDC;
+    color: #116A7B;
+  }
+
+.logo{
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+}
+  
+.cardbody-color{
+    background-color: #fff;
+}
+  
+a{
+    text-decoration: none;
+}
+
+.login {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.card {
+    width: 23rem;
+}
+
+input {
+    font-size: 14px;
+}

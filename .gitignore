@@ -1,0 +1,42 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+inventory-system-spa/dist
+inventory-system-spa/tmp
+inventory-system-spa/out-tsc
+inventory-system-spa/bazel-out
+
+# Node
+inventory-system-spa/node_modules
+inventory-system-spanpm-debug.log
+inventory-system-spa/yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+inventory-system-spa/.angular/cache
+.sass-cache/
+inventory-system-spa/connect.lock
+inventory-system-spa/coverage
+inventory-system-spa/libpeerconnection.log
+testem.log
+inventory-system-spa/typings
+
+# System files
+.DS_Store
+Thumbs.db
