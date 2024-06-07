@@ -1,0 +1,36 @@
+a.menu-item{
+  display: block;
+  text-decoration: none;
+}
+
+.menu-item{
+  border: none;
+  color: #116A7B;
+  text-decoration: none;
+  display: block;
+  font-size: 15px;
+  margin: 10px 0px 10px 20px;
+}
+
+.menu-item:hover {
+  font-weight: bolder;
+}
+
+.offcanvas.offcanvas-start { 
+  width: 250px !important;
+}
+
+h5.offcanvas-title {
+  color: #116A7B;
+}
+
+.offcanvas-header {
+  background-color: #C2DEDC;
+}
+// .offcanvas {
+//   background-color: #C2DEDC;
+// }
+
+// .offcanvas.offcanvas-start { 
+//   top: 56px;
+// }
