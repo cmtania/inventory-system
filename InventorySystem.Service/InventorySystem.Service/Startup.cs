@@ -56,6 +56,16 @@ namespace InventorySystem.Service
                  };
              });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                        .WithOrigins("http://localhost:1995")
+                        .WithMethods("GET", "POST")
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
+
             // add db connection
             var connectionString = Configuration.GetSection("DBConnection").Get<string>();
             services.AddDbContext<InventoryDBContext>(options => options.UseSqlServer(connectionString));
@@ -72,17 +82,22 @@ namespace InventorySystem.Service
             builder.RegisterType<UserRepository>().As<IUserRepository>();
             builder.RegisterType<LoginService>().As<ILoginService>();
             builder.RegisterType<LoginModel>().As<ILoginModel>();
+            builder.RegisterType<ProductService>().As<IProductService>();
+            builder.RegisterType<ProductModel>().As<IProductModel>();
+            builder.RegisterType<ProductRepository>().As<IProductRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseCors("CorsPolicy");
+
             if (env.IsDevelopment()) { 
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
 
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My A V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Api V1");
                 });
             }
 
