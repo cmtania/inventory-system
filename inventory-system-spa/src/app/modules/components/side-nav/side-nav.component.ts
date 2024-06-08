@@ -1,6 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { SidebarNavService } from '../../services/sidebar-nav.service';
 
 @Component({
   selector: 'app-side-nav',
