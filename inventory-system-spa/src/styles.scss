@@ -9,3 +9,11 @@
 .main-text-color {
     color: #116A7B;
 }
+
+.modal-content {
+    border-radius: 0px !important;
+}
+
+.form-control.is-invalid {
+    background-image: none;
+}
