@@ -1,0 +1,6 @@
+{
+    "applicationName": "InventorySystem",
+    "applicationVersion": "1.0.0",
+    "webApiUrl": "http://localhost:28542",
+    "apiVersion": "v1"
+}
