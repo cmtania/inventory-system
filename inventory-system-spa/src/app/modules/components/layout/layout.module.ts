@@ -34,8 +34,10 @@ import { ProductModalComponent } from "../modal/product-modal/product-modal.comp
     ProductModalComponent
   ],
   exports:[MatButtonModule],  
-  providers:[ WebApi, ProductService, BsModalService
-   ]
-
+  providers:[ 
+    WebApi,
+    ProductService,
+    BsModalService
+  ]
 })
 export class LayoutModule { }
