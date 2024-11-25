@@ -7,25 +7,37 @@ import { HeaderComponent } from "../header/header.component";
 import { DashboardComponent } from "../dashboard/dashboard.component";
 import { ReportsComponent } from "../reports/reports.component";
 import { MatButtonModule } from '@angular/material/button';
-import { SidebarNavService } from "../../services/sidebar-nav.service";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { WebApi } from "../../services/webapi.service";
+import { ProductService } from "../../services/product.service";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { ProductComponent } from "../product/product.component";
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { ProductModalComponent } from "../modal/product-modal/product-modal.component";
 
 @NgModule({
   imports: [
     FormsModule,
     LayoutRoutingModule,
     CommonModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    ModalModule
   ],  
   declarations: [
     LayoutComponent,
     DashboardComponent,
     SideNavComponent,
     HeaderComponent,
-    ReportsComponent
+    ReportsComponent,
+    ProductComponent,
+    ProductModalComponent
   ],
   exports:[MatButtonModule],  
-  providers:[ SidebarNavService
-   ]
-
+  providers:[ 
+    WebApi,
+    ProductService,
+    BsModalService
+  ]
 })
 export class LayoutModule { }

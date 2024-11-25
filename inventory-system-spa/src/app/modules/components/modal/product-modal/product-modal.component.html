@@ -1,0 +1,65 @@
+<div class="modal-header">
+    <span class="modal-title">{{ title }}</span>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form [formGroup]="productForm">
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="ProductName">Name</label>
+            @if (formUtils.isInvalid(productForm, 'ProductName')){
+              <span class="span-info">Must be more than 5 characters</span>
+            }
+          </div>
+          <input type="text" class="form-control form-control-sm" id="ProductName" formControlName="ProductName"  [class.is-invalid]="formUtils.isInvalid(productForm, 'ProductName')">
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="ProductCode">Code</label>
+            @if (formUtils.isInvalid(productForm, 'ProductCode')){
+              <span class="span-info">Must be more than 5 characters</span>
+            }
+          </div>
+          <input type="text" class="form-control form-control-sm" id="ProductCode" formControlName="ProductCode"  [class.is-invalid]="formUtils.isInvalid(productForm, 'ProductCode')">
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="UnitPrice">Unit price</label>
+              <span class="span-info">Default to 0 value</span>
+          </div>
+          <input type="number" min="0" class="form-control form-control-sm" id="UnitPrice" formControlName="UnitPrice"  [class.is-invalid]="formUtils.isInvalid(productForm, 'UnitPrice')">
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="ProductDescription">Description</label>
+          </div>
+          <textarea class="form-control form-control-sm" id="ProductDescription" formControlName="ProductDescription" ></textarea>  
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="ProductCategory">Category</label>
+          </div>
+          <select id="country" id="ProductCategory" class="form-control form-control-sm" formControlName="ProductCategory">
+            <option selected> TestBrand</option>
+            <option value="1"> TestBrand</option>
+          </select>
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="ProductBrand">Brand</label>
+          </div>
+          <select id="country" id="ProductBrand" class="form-control form-control-sm" formControlName="ProductBrand">
+            <option selected> TestBrand</option>
+            <option> TestBrand</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-custom-close" (click)="bsModalRef.hide()">{{ closeBtnName }}</button>
+    <button type="button" class="btn btn-save" (click)="saveProduct()" [disabled]="!productForm.valid">{{ saveBtnName }}</button>
+  </div>

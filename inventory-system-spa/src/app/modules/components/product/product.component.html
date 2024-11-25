@@ -1,0 +1,41 @@
+<div class="container-xxl mt-5">
+  <div class="row">
+    <h2 class="mb-4">Products</h2>
+    <span class="span-create" (click)="createProduct()">Create new product</span>
+  </div>
+    
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Code</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Category</th>
+            <th scope="col">Brand</th>
+            <th class="th-action" scope="col" width="150px"></th>
+          </tr>
+        </thead>
+        <tbody>
+            @for (product of productList; track product.ProductId; let index = $index) {
+                <tr >
+                    <th scope="row">{{ index + 1 }}</th>
+                    <td>{{product.ProductCode}}</td>
+                    <td>{{product.ProductName}}</td>
+                    <td>{{product.ProductDescription}}</td>
+                    <td>{{product.Brand}}</td>
+                    <td>{{product.Category}}</td>
+                    <td width="150px" class="td-action"><button class="btn-edit" (click)="editProduct(product.ProductId)" role="button">Edit</button> <button class="btn-delete" role="button">Delete</button></td>
+                  </tr>
+            }
+            @empty {
+                <tr >
+                    <td colspan="6">Empty product list</td>
+                  </tr>
+            }
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
