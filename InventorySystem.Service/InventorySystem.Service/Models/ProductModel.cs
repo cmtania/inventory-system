@@ -1,4 +1,5 @@
-﻿using InventorySystem.Service.Interfaces;
+﻿using InventorySystem.Service.Constants.Constants;
+using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Models.DatabaseModel;
 using InventorySystem.Service.Models.RequestModel;
 using InventorySystem.Service.ViewModels;
@@ -18,7 +19,7 @@ namespace InventorySystem.Service.Models
             var apiResponse = new ApiResponse { IsOk =  true};
             try
             {
-                var products = _productRepository.GetProducts();
+                var products = await _productRepository.GetProducts();
                 var productsVm = new List<ProductViewModel>();
                 foreach (var prod in products) {
                     productsVm.Add(new ProductViewModel
@@ -41,8 +42,7 @@ namespace InventorySystem.Service.Models
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = "GetProducts", Message = ex.Message };
-                apiResponse.Messages = [errorMessage];
+                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_GetProduct, Message = ex.Message }];
 
                 return apiResponse;
             }
@@ -52,7 +52,7 @@ namespace InventorySystem.Service.Models
             var apiResponse = new ApiResponse { IsOk = true };
             try
             {
-                var product = _productRepository.GetProduct(productId);
+                var product = await _productRepository.GetProduct(productId);
                 var productVm= new ProductViewModel
                 {
                     ProductId= product.PrdctId,
@@ -73,7 +73,7 @@ namespace InventorySystem.Service.Models
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = "Get Product", Message = ex.Message };
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_GetProduct, Message = ex.Message };
                 apiResponse.Messages = [errorMessage];
 
                 return apiResponse;
@@ -97,13 +97,14 @@ namespace InventorySystem.Service.Models
 
                 await _productRepository.SaveProduct(productModel);
 
+                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }];
+
                 return apiResponse;
             }
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = "Save Product", Message = ex.Message };
-                apiResponse.Messages = [errorMessage];
+                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.Message }];
 
                 return apiResponse;
             }
@@ -113,10 +114,10 @@ namespace InventorySystem.Service.Models
             var apiResponse = new ApiResponse { IsOk = true };
             try
             {
-                var productToUpdate = _productRepository.GetProduct(product.ProductId);
+                var productToUpdate = await _productRepository.GetProduct(product.ProductId);
                 if (productToUpdate == null) {
                     apiResponse.IsOk = false;
-                    var errorMessage = new ResponseMessage { Title = "Update Product", Message = "Product not existed." };
+                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ProductConstants.TRAN_ProductIsMissing };
                     apiResponse.Messages = [errorMessage];
 
                     return apiResponse;
@@ -137,7 +138,7 @@ namespace InventorySystem.Service.Models
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = "Update Product", Message = ex.Message };
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.Message };
                 apiResponse.Messages = [errorMessage];
 
                 return apiResponse;
@@ -148,11 +149,11 @@ namespace InventorySystem.Service.Models
             var apiResponse = new ApiResponse { IsOk = true };
             try
             {
-                var productToPurge = _productRepository.GetProduct(productId);
+                var productToPurge = await _productRepository.GetProduct(productId);
                 if (productToPurge == null)
                 {
                     apiResponse.IsOk = false;
-                    var errorMessage = new ResponseMessage { Title = "Delete Product", Message = "Product not existed." };
+                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = ProductConstants.TRAN_ProductIsMissing };
                     apiResponse.Messages = [errorMessage];
 
                     return apiResponse;
@@ -169,7 +170,7 @@ namespace InventorySystem.Service.Models
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = "Delete Product", Message = ex.Message };
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = ex.Message };
                 apiResponse.Messages = [errorMessage];
 
                 return apiResponse;

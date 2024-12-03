@@ -12,23 +12,24 @@ namespace InventorySystem.Service.Repository
             _dbContext = dbContext;
         }
 
-        public List<TrnProduct> GetProducts() { 
-            var products = _dbContext.TrnProducts
-                            .Include(b => b.Brnd)
-                            .Include(c => c.Ctgry)
-                            .Where(p => p.Purge == false)
-                            .ToList();
+        public async Task<List<TrnProduct>> GetProducts()
+        {
+            var products = await _dbContext.TrnProducts
+                             .Include(b => b.Brnd)
+                             .Include(c => c.Ctgry)
+                             .Where(p => p.Purge == false)
+                             .ToListAsync();
 
             return products;
         }
 
-        public TrnProduct GetProduct(int productId)
+        public async Task<TrnProduct> GetProduct(int productId)
         {
-            var product = _dbContext.TrnProducts
+            var product = await _dbContext.TrnProducts
                             .Include(b => b.Brnd)
                             .Include(c => c.Ctgry)
                             .Where(p => p.Purge == false)
-                            .FirstOrDefault(x => x.PrdctId == productId);
+                            .FirstOrDefaultAsync(x => x.PrdctId == productId);
 
             return product;
         }
