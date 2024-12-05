@@ -25,8 +25,7 @@ namespace InventorySystem.Service.Models.AccountModel
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var responseMessage = new ResponseMessage { Title = "Error", Message = ex.Message };
-                apiResponse.Messages = [responseMessage];
+                apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
                 return Task.FromResult(apiResponse);
             }
             

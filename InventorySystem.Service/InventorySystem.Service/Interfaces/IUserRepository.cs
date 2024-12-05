@@ -5,8 +5,7 @@ namespace InventorySystem.Service.Interfaces
 {
     public interface IUserRepository
     {
-        string GetUser(LoginModel login);
         TrnUser GetUserById(int userId);
-        TrnUser GetUser(string username, string password);
+        Task<TrnUser> GetUser(string username, string password);
     }
 }

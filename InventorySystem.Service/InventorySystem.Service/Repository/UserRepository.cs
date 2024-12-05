@@ -1,6 +1,7 @@
 ﻿using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Models;
 using InventorySystem.Service.Models.DatabaseModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem.Service.Repository
 {
@@ -11,16 +12,11 @@ namespace InventorySystem.Service.Repository
             _dbContext = dbContext;
         }
 
-        public TrnUser GetUser(string username, string password)
+        public Task<TrnUser> GetUser(string username, string password)
         {
-            var dbResult = _dbContext.TrnUsers.Where(x => (x.UsrNm == username || x.Email == username) && x.Pswrd == password ).FirstOrDefault();
+            var dbResult = _dbContext.TrnUsers.Where(x => (x.UsrNm == username || x.Email == username) && x.Pswrd == password ).FirstOrDefaultAsync();
 
             return dbResult;
-        }
-
-        public string GetUser(LoginModel login)
-        {
-            return "User accepted";
         }
 
         public TrnUser GetUserById(int userId) 
