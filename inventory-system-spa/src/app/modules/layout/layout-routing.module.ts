@@ -1,9 +1,10 @@
 import { RouterModule, Routes } from "@angular/router";
 import { LayoutComponent } from "./layout.component";
 import { NgModule } from "@angular/core";
-import { DashboardComponent } from "../dashboard/dashboard.component";
-import { ReportsComponent } from "../reports/reports.component";
-import { ProductComponent } from "../product/product.component";
+import { DashboardComponent } from "../components/dashboard/dashboard.component";
+import { ReportsComponent } from "../components/reports/reports.component";
+import { ProductComponent } from "../components/product/product.component";
+import { BrandComponent } from "../components/brand/brand.component";
 
 const routes: Routes = [{
     path: "",
@@ -12,6 +13,7 @@ const routes: Routes = [{
           { path: "", redirectTo: "/home/dashboard", pathMatch: "full"},
           { path: "dashboard", component: DashboardComponent},
           { path: "products", component: ProductComponent },
+          { path: "brands", component: BrandComponent },
           { path: "reports", component: ReportsComponent },
       ],       
 },

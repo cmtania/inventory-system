@@ -9,7 +9,7 @@ export const routes: Routes = [
     { 
         path: "home", 
         loadChildren: () => 
-          import("./modules/components/layout/layout.module").then(m => m.LayoutModule)
+          import("./modules/layout/layout.module").then(m => m.LayoutModule)
       }, 
 ];
 

@@ -63,7 +63,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       initialState: {
         title: CONSTANTS.PRODUCT_EditModalTitle
       },
-      class: "modal-lg"
+      class: "modal-md"
     };
     this.bsModalRef = this.modalService.show(ProductModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonCancel;
