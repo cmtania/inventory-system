@@ -1,4 +1,4 @@
-﻿using InventorySystem.Service.Constants.Constants;
+﻿using InventorySystem.Service.Constants;
 using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Models;
 using InventorySystem.Service.Models.DatabaseModel;

@@ -1,6 +1,6 @@
 ﻿namespace InventorySystem.Service.Constants
 {
-    public static class App
+    public class App
     {
         public static string AuthorizeApp = "InventorySystem";
     }

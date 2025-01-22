@@ -1,4 +1,4 @@
-﻿namespace InventorySystem.Service.Constants.Constants
+﻿namespace InventorySystem.Service.Constants
 {
     public class ProductConstants
     {
