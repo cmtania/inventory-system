@@ -83,7 +83,6 @@ namespace InventorySystem.Service
             builder.RegisterType<LoginService>().As<ILoginService>();
             builder.RegisterType<LoginModel>().As<ILoginModel>();
             builder.RegisterType<ProductService>().As<IProductService>();
-            builder.RegisterType<ProductModel>().As<IProductModel>();
             builder.RegisterType<ProductRepository>().As<IProductRepository>();
         }
 

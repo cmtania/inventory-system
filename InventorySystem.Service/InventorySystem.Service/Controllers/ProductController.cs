@@ -27,7 +27,7 @@ namespace InventorySystem.Service.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductAsync(int productId)
         {
-            var product = await _productService.GetProductAsync(productId);
+            var product = await _productService.GetProductByIdAsync(productId);
 
             return Ok(product);
         }
