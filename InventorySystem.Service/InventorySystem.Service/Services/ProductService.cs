@@ -23,6 +23,7 @@ namespace InventorySystem.Service.Services
             {
                 var products = await _productRepository.GetProducts();
                 var productsVm = new List<ProductViewModel>();
+
                 foreach (var prod in products)
                 {
                     productsVm.Add(new ProductViewModel

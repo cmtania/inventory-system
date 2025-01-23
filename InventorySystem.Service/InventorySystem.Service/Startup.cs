@@ -81,9 +81,10 @@ namespace InventorySystem.Service
             builder.RegisterType<AccountModel>().As<IAccountModel>();
             builder.RegisterType<UserRepository>().As<IUserRepository>();
             builder.RegisterType<LoginService>().As<ILoginService>();
-            builder.RegisterType<LoginModel>().As<ILoginModel>();
             builder.RegisterType<ProductService>().As<IProductService>();
             builder.RegisterType<ProductRepository>().As<IProductRepository>();
+            builder.RegisterType<BrandService>().As<IBrandService>();
+            builder.RegisterType<BrandRepository>().As<IBrandRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

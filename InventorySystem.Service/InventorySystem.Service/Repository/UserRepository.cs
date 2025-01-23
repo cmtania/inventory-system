@@ -19,9 +19,9 @@ namespace InventorySystem.Service.Repository
             return dbResult;
         }
 
-        public TrnUser GetUserById(int userId) 
+        public Task<TrnUser> GetUserById(int userId) 
         { 
-            var dbResult = _dbContext.TrnUsers.Where(x => x.UsrId == userId).FirstOrDefault();
+            var dbResult = _dbContext.TrnUsers.Where(x => x.UsrId == userId).FirstOrDefaultAsync();
 
             return dbResult;
         }

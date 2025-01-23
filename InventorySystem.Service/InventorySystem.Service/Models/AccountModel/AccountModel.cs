@@ -9,7 +9,7 @@ namespace InventorySystem.Service.Models.AccountModel
             _userRepository = userRepository;
         }
 
-        public Task<ApiResponse> GetUserByIdAsync(int userId)
+        public async Task<ApiResponse> GetUserByIdAsync(int userId)
         {
             var apiResponse = new ApiResponse
             {
@@ -17,16 +17,16 @@ namespace InventorySystem.Service.Models.AccountModel
             };
             try
             {
-                var user = _userRepository.GetUserById(userId);
+                var user = await _userRepository.GetUserById(userId);
                 apiResponse.Results = [user];
 
-                return Task.FromResult(apiResponse);
+                return apiResponse;
             }
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
                 apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
-                return Task.FromResult(apiResponse);
+                return apiResponse;
             }
             
         }
