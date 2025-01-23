@@ -5,6 +5,8 @@ import { ProductModel } from '../../model/product.model';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { ProductModalComponent } from '../modal/product-modal/product-modal.component';
 import { CONSTANTS } from '../../model/constants.model';
+import { BrandService } from '../../services/brand.service';
+import { BrandModel } from '../../model/brand.model';
 
 @Component({
   selector: 'app-product',
@@ -14,27 +16,39 @@ import { CONSTANTS } from '../../model/constants.model';
 })
 export class ProductComponent implements OnInit, OnDestroy {
 
-  constructor(private productService: ProductService, 
-              private modalService: BsModalService,){
+  constructor(private readonly _productService: ProductService,
+              private readonly _brandService: BrandService,
+              private _modalService: BsModalService,){
   }
 
   subsink = new SubSink();
   productList = new Array<ProductModel>();
+  brandList = new Array<BrandModel>();
   modalTitle: string = "";
   bsModalRef?: BsModalRef;
 
   ngOnInit(){
     this.subsink.add(
-      this.getProducts()
+      this.getProducts(),
+      this.getBrands()
     );
   }
 
   getProducts() {
-    return this.productService.getProducts().subscribe(
+    return this._productService.getProducts().subscribe(
       (response) => {
         if (response.IsOk) {
           this.productList = response.Results[0];
-          return;
+        } 
+      },
+    );
+  }
+
+  getBrands() {
+    return this._brandService.getBrands().subscribe(
+      (response) => {
+        if (response.IsOk) {
+          this.brandList = response.Results[0];
         } 
       },
     );
@@ -52,7 +66,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         title: CONSTANTS.PRODUCT_CreateModalTitle,
       }
     };
-    this.bsModalRef = this.modalService.show(ProductModalComponent, initialState);
+    this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonClose;
     this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonSave;
   }
@@ -65,7 +79,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       },
       class: "modal-lg"
     };
-    this.bsModalRef = this.modalService.show(ProductModalComponent, initialState);
+    this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonCancel;
     this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonUpdate;
   }

@@ -2,6 +2,8 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FormUtils } from '../../../utils/form.utils';
+import { ProductService } from '../../../services/product.service';
+import { ProductModel } from '../../../model/product.model';
 
 @Component({
   selector: 'app-product-modal',
@@ -16,15 +18,14 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   saveBtnName?: string;
   formUtils = FormUtils;
   
-  constructor(private fb: FormBuilder, 
-              public bsModalRef: BsModalRef){
+  constructor(private fb: FormBuilder, public bsModalRef: BsModalRef){
     this.productForm = this.fb.group({
       ProductName: ['', [Validators.required, Validators.minLength(5)]],
       ProductCode: ['', [Validators.required, Validators.minLength(5)]],
       UnitPrice: [0, [Validators.required]],
-      ProductDescription: ['',],
-      ProductCategory: ['',],
-      ProductBrand: ['',]
+      ProductDescription: [''],
+      ProductCategory: [''],
+      ProductBrand: ['']
     });
   }
   
@@ -48,6 +49,16 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   }
 
   saveProduct(){
+    // const productModel = new ProductModel(
+    //   this.productForm.get("ProductCode")?.value,
+    //   this.productForm.get("ProductName")?.value,
+    //   this.productForm.get("ProductDescription")?.value,
+    //   this.productForm.get("ProductBrand")?.value,
+    //   this.productForm.get("ProductCategory")?.value,
+    //   this.productForm.get("ProductName")?.value,
+    //   this.productForm.get("ProductName")?.value,
+    // )
+    // this._productService.saveProduct()
 
   }
   closeModal(){

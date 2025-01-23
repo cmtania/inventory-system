@@ -8,7 +8,7 @@ import { throwError } from "rxjs";
 @Injectable({
     providedIn: "root"
 })
-export class AppConfigService {
+export class AppConfig {
     public static settings: IAppConfig
 
     constructor(private readonly http: HttpClient){}
@@ -18,8 +18,8 @@ export class AppConfigService {
             this.http.get(configUrl)
             .toPromise()
             .then((res) => {
-                AppConfigService.settings = res as IAppConfig;
-
+                AppConfig.settings = res as IAppConfig;
+                
                 resolve();
             })
             .catch(error => throwError(error));

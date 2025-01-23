@@ -10,10 +10,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { WebApi } from "../../services/webapi.service";
 import { ProductService } from "../../services/product.service";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 import { ProductComponent } from "../product/product.component";
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ProductModalComponent } from "../modal/product-modal/product-modal.component";
+import { BrandService } from "../../services/brand.service";
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { ProductModalComponent } from "../modal/product-modal/product-modal.comp
   providers:[ 
     WebApi,
     ProductService,
+    BrandService,
     BsModalService
   ]
 })

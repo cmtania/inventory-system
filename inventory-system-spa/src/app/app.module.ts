@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgxsModule } from '@ngxs/store';
 import { AppRoutingModule } from './app-routing.module';
-import { AppConfigService } from './core/app-config-service';
+import { AppConfig } from './core/app-config-service';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -25,12 +25,15 @@ import { HttpClientModule } from '@angular/common/http';
     providers:[
         {
         provide: APP_INITIALIZER,
-        useFactory: (appConfigService: AppConfigService) => () => {
+        useFactory: (appConfigService: AppConfig) => () => {
         const configFile = environment.production ? 
             `assets/config/config.json` : `assets/config/config.dev.json`;
-        appConfigService.load(configFile);
+
+            return appConfigService.load(configFile).then(()=>{
+                console.log("app config initialized.");
+            });
         },
-        deps: [AppConfigService],
+        deps: [AppConfig],
         multi: true
         },
         HttpClientModule
