@@ -4,6 +4,12 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FormUtils } from '../../../utils/form.utils';
 import { ProductService } from '../../../services/product.service';
 import { ProductModel } from '../../../model/product.model';
+import { BrandService } from '../../../services/brand.service';
+import { BrandModel } from '../../../model/brand.model';
+import { SubSink } from 'subsink';
+import { CategoryService } from '../../../services/category.service';
+import { CategoryModel } from '../../../model/category.model';
+import { ResponseObject } from '../../../model/response.object';
 
 @Component({
   selector: 'app-product-modal',
@@ -17,8 +23,16 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   closeBtnName?: string;
   saveBtnName?: string;
   formUtils = FormUtils;
+  brandList = new Array<BrandModel>();
+  categoryList = new Array<CategoryModel>();
+
+  subsink = new SubSink();
   
-  constructor(private fb: FormBuilder, public bsModalRef: BsModalRef){
+  constructor(private fb: FormBuilder,
+              private readonly _brandService: BrandService,
+              private readonly _categoryService: CategoryService,
+              private readonly  _productService: ProductService,
+              public bsModalRef: BsModalRef){
     this.productForm = this.fb.group({
       ProductName: ['', [Validators.required, Validators.minLength(5)]],
       ProductCode: ['', [Validators.required, Validators.minLength(5)]],
@@ -31,6 +45,11 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   
   ngOnInit(){
     console.log("product modal");
+    
+    this.subsink.add(
+      this.getBrands(),
+      this.getCategories()
+    );
   }
 
   onSubmit() {
@@ -49,22 +68,45 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   }
 
   saveProduct(){
-    // const productModel = new ProductModel(
-    //   this.productForm.get("ProductCode")?.value,
-    //   this.productForm.get("ProductName")?.value,
-    //   this.productForm.get("ProductDescription")?.value,
-    //   this.productForm.get("ProductBrand")?.value,
-    //   this.productForm.get("ProductCategory")?.value,
-    //   this.productForm.get("ProductName")?.value,
-    //   this.productForm.get("ProductName")?.value,
-    // )
-    // this._productService.saveProduct()
+    const productModel = {
+      ProductCode: this.productForm.get("ProductCode")?.value,
+      ProductName: this.productForm.get("ProductName")?.value,
+      UnitPrice: this.productForm.get("UnitPrice")?.value,
+      ProductDescription: this.productForm.get("ProductDescription")?.value,
+      BrandId: parseInt(this.productForm.get("ProductBrand")?.value),
+      CategoryId: parseInt(this.productForm.get("ProductCategory")?.value),
+    }
+    this._productService.saveProduct(productModel).subscribe((resp: ResponseObject) => {
+      if(resp && resp.IsOk){
+        console.log("saved");
+      }
+    });
 
   }
   closeModal(){
     const productModal = new (window as any).bootstrap.Modal("#productmodal");
     console.log("modal", productModal);
     productModal.hide();
+  }
+
+  private getBrands() {
+    return this._brandService.getBrands().subscribe(
+      (response) => {
+        if (response.IsOk) {
+          this.brandList = response.Results[0];
+        } 
+      },
+    );
+  }
+
+  private getCategories() {
+    return this._categoryService.getCategories().subscribe(
+      (response) => {
+        if (response.IsOk) {
+          this.categoryList = response.Results[0];
+        } 
+      },
+    );
   }
 
   ngOnDestroy(){

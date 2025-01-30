@@ -6,7 +6,11 @@ import { ProductModel } from "../model/product.model";
 import { AppConfig } from "../../core/app-config-service";
 
 
-@Injectable()
+
+@Injectable({
+  providedIn: 'root',
+})
+
 export class BrandService {
     constructor(private webApi: WebApi){
 

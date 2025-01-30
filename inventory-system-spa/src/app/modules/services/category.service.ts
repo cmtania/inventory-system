@@ -11,16 +11,15 @@ import { AppConfig } from "../../core/app-config-service";
   providedIn: 'root',
 })
 
-export class ProductService {
+export class CategoryService {
     constructor(private webApi: WebApi){
 
     }
 
     private readonly baseUrl = AppConfig.settings.webApiUrl;
 
-    getProducts() {
-        const url = `${this.baseUrl}Product/getproducts`;
-        return this.webApi.httpGet(url).pipe(
+    getCategories() {
+        return this.webApi.httpGet(`${this.baseUrl}Category/getcategory`).pipe(
           concatMap((respObj: any) => {
             console.log('respObj', respObj);
             if (!respObj.IsOk) {
@@ -38,26 +37,5 @@ export class ProductService {
           })
         );
     }
-
-    saveProduct(product: any) {
-      const url = `${this.baseUrl}Product/saveproduct`;
-      return this.webApi.httpPost(url, product).pipe(
-        concatMap((respObj: any) => {
-          console.log('respObj', respObj);
-          if (!respObj.IsOk) {
-            throw new ResponseObject(false, [], ['error']);
-          }
-  
-          return of(new ResponseObject(true, respObj.Results, []));
-        }),
-        catchError((respError: any) => {
-          if (respError instanceof ResponseObject) {
-            return of(new ResponseObject(false, [], ['Error']));
-          }
-  
-          return of(new ResponseObject(false, [], ['Error']));
-        })
-      );
-  }
 }
 

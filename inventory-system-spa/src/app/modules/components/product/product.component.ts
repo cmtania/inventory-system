@@ -17,20 +17,17 @@ import { BrandModel } from '../../model/brand.model';
 export class ProductComponent implements OnInit, OnDestroy {
 
   constructor(private readonly _productService: ProductService,
-              private readonly _brandService: BrandService,
               private _modalService: BsModalService,){
   }
 
   subsink = new SubSink();
   productList = new Array<ProductModel>();
-  brandList = new Array<BrandModel>();
   modalTitle: string = "";
   bsModalRef?: BsModalRef;
 
   ngOnInit(){
     this.subsink.add(
-      this.getProducts(),
-      this.getBrands()
+      this.getProducts()
     );
   }
 
@@ -39,16 +36,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       (response) => {
         if (response.IsOk) {
           this.productList = response.Results[0];
-        } 
-      },
-    );
-  }
-
-  getBrands() {
-    return this._brandService.getBrands().subscribe(
-      (response) => {
-        if (response.IsOk) {
-          this.brandList = response.Results[0];
         } 
       },
     );
@@ -64,7 +51,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     const initialState: ModalOptions = {
       initialState: {
         title: CONSTANTS.PRODUCT_CreateModalTitle,
-      }
+      },
+      backdrop: 'static',
+      keyboard: false
     };
     this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonClose;
@@ -77,7 +66,9 @@ export class ProductComponent implements OnInit, OnDestroy {
       initialState: {
         title: CONSTANTS.PRODUCT_EditModalTitle
       },
-      class: "modal-lg"
+      class: "modal-lg",
+      backdrop: 'static',
+      keyboard: false
     };
     this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonCancel;

@@ -42,18 +42,26 @@
           <div class="label-container">
             <label for="ProductCategory">Category</label>
           </div>
-          <select id="country" id="ProductCategory" class="form-control form-control-sm" formControlName="ProductCategory">
-            <option selected> TestBrand</option>
-            <option value="1"> TestBrand</option>
+          <select id="ProductCategory" class="form-control form-control-sm" formControlName="ProductCategory">
+            @for (category of categoryList; track category.CategoryId; let index = $index) {
+              <option value="{{category.CategoryId}}">{{category.Label}}</option>
+            }
+            @empty {
+              <option [disabled]="true"> No available brand.</option>
+            }
           </select>
         </div>
         <div class="form-group div-form-group">
           <div class="label-container">
             <label for="ProductBrand">Brand</label>
           </div>
-          <select id="country" id="ProductBrand" class="form-control form-control-sm" formControlName="ProductBrand">
-            <option selected> TestBrand</option>
-            <option> TestBrand</option>
+          <select id="ProductBrand" class="form-control form-control-sm" formControlName="ProductBrand">
+            @for (brand of brandList; track brand.BrandId; let index = $index) {
+              <option value="{{brand.BrandId}}">{{brand.Label}}</option>
+            }
+            @empty {
+              <option [disabled]="true"> No available brand.</option>
+            }
           </select>
         </div>
       </form>

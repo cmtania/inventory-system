@@ -3,7 +3,10 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+  })
+
 export class WebApi {
 
     constructor(private httpClient: HttpClient){
