@@ -85,6 +85,8 @@ namespace InventorySystem.Service
             builder.RegisterType<ProductRepository>().As<IProductRepository>();
             builder.RegisterType<BrandService>().As<IBrandService>();
             builder.RegisterType<BrandRepository>().As<IBrandRepository>();
+            builder.RegisterType<CategoryService>().As<ICategoryService>();
+            builder.RegisterType<CategoryRepository>().As<ICategoryRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

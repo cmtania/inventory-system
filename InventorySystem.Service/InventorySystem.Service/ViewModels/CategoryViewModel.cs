@@ -1,9 +1,9 @@
 ﻿namespace InventorySystem.Service.ViewModels
 {
-    public class CategoryViewModel
+    public class BrandViewModel
     {
-        public int CategoryId { get; set; }
-        public string CategoryCode { get; set; }
+        public int BrandId { get; set; }
+        public string BrandCode { get; set; }
         public string Label { get; set; }
         public string? Remarks { get; set; }
     }

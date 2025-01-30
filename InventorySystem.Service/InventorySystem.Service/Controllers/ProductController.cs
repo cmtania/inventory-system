@@ -34,7 +34,7 @@ namespace InventorySystem.Service.Controllers
 
         [Route("saveproduct")]
         [HttpPost]
-        public async Task<IActionResult> SaveProductAsync([FromBody] ProductRequest product)
+        public async Task<IActionResult> SaveProductAsync([FromBody] SaveProductRequest product)
         {
             var saveResponse = await _productService.SaveProductAsync(product);
 

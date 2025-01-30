@@ -83,14 +83,13 @@ namespace InventorySystem.Service.Services
                 return apiResponse;
             }
         }
-        public async Task<ApiResponse> SaveProductAsync(ProductRequest product)
+        public async Task<ApiResponse> SaveProductAsync(SaveProductRequest product)
         {
             var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var productModel = new TrnProduct
                 {
-                    PrdctId = product.ProductId,
                     PrdctCd = product.ProductCode,
                     PrdctNm = product.ProductName,
                     UntPrc = product.UnitPrice,
