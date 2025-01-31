@@ -9,19 +9,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppConfig } from './core/app-config-service';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { SpinnerComponent } from './modules/shared/spinner/spinner.component';
+import { SpinnerState } from './modules/state-management/states/spinner.state';
 
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        SpinnerComponent
     ],
     imports: [
-        CommonModule,
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        NgxsModule.forRoot([], { developmentMode: /** !environment.production */ false })
-    ],
+    CommonModule,
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    NgxsModule.forRoot([SpinnerState], { developmentMode: /** !environment.production */ false })
+],
     providers:[
         {
         provide: APP_INITIALIZER,
