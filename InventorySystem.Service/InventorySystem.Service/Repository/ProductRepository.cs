@@ -37,6 +37,9 @@ namespace InventorySystem.Service.Repository
         public async Task SaveProduct(TrnProduct product)
         {
             await _dbContext.AddAsync(product);
+
+            await _dbContext.SaveChangesAsync();
+
         }
 
         public async Task UpdateProduct(TrnProduct product)
