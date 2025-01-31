@@ -10,6 +10,10 @@ import { SubSink } from 'subsink';
 import { CategoryService } from '../../../services/category.service';
 import { CategoryModel } from '../../../model/category.model';
 import { ResponseObject } from '../../../model/response.object';
+import { take, tap } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { TriggerSaveProduct } from '../../../state-management/actions/product.action';
+import { HideSpinner, ShowSpinner } from '../../../state-management/actions/spinner.action';
 
 @Component({
   selector: 'app-product-modal',
@@ -32,20 +36,19 @@ export class ProductModalComponent implements OnInit, OnDestroy {
               private readonly _brandService: BrandService,
               private readonly _categoryService: CategoryService,
               private readonly  _productService: ProductService,
+              private readonly _store: Store,
               public bsModalRef: BsModalRef){
-    this.productForm = this.fb.group({
-      ProductName: ['', [Validators.required, Validators.minLength(5)]],
-      ProductCode: ['', [Validators.required, Validators.minLength(5)]],
-      UnitPrice: [0, [Validators.required]],
-      ProductDescription: [''],
-      ProductCategory: [''],
-      ProductBrand: ['']
-    });
+      this.productForm = this.fb.group({
+        ProductName: ['', [Validators.required, Validators.minLength(5)]],
+        ProductCode: ['', [Validators.required, Validators.minLength(5)]],
+        UnitPrice: [0, [Validators.required]],
+        ProductDescription: ['',[Validators.required]],
+        ProductCategory: ['', [Validators.required]],
+        ProductBrand: ['', [Validators.required]]
+      });
   }
   
   ngOnInit(){
-    console.log("product modal");
-    
     this.subsink.add(
       this.getBrands(),
       this.getCategories()
@@ -68,6 +71,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   }
 
   saveProduct(){
+    this._store.dispatch(new ShowSpinner());
     const productModel = {
       ProductCode: this.productForm.get("ProductCode")?.value,
       ProductName: this.productForm.get("ProductName")?.value,
@@ -76,16 +80,26 @@ export class ProductModalComponent implements OnInit, OnDestroy {
       BrandId: parseInt(this.productForm.get("ProductBrand")?.value),
       CategoryId: parseInt(this.productForm.get("ProductCategory")?.value),
     }
-    this._productService.saveProduct(productModel).subscribe((resp: ResponseObject) => {
-      if(resp && resp.IsOk){
-        console.log("saved");
-      }
-    });
+
+    this._productService.saveProduct(productModel).pipe(
+      take(1),
+      tap((resp: ResponseObject) => {
+        if (resp && resp.IsOk) {
+          console.log("saved");
+          this._store.dispatch(new TriggerSaveProduct());
+          this.closeModal();
+
+          return;
+        }
+
+        this._store.dispatch(new HideSpinner());
+      })
+    ).subscribe();
 
   }
+
   closeModal(){
     const productModal = new (window as any).bootstrap.Modal("#productmodal");
-    console.log("modal", productModal);
     productModal.hide();
   }
 
@@ -111,6 +125,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     console.log("modal component destroy");
+    this.subsink.unsubscribe();
     this.productForm.reset();
   }
 

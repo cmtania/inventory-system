@@ -19,7 +19,7 @@ export class WebApi {
       });
 
     httpPost(url: string, body: any):Observable<any> {
-        return  this.httpClient.post(url, body);
+        return  this.httpClient.post(url, body, { headers: this.customHeaders });
     }
 
     httpGet(url: string, body: any = null):Observable<any> {

@@ -7,6 +7,11 @@ import { ProductModalComponent } from '../modal/product-modal/product-modal.comp
 import { CONSTANTS } from '../../model/constants.model';
 import { BrandService } from '../../services/brand.service';
 import { BrandModel } from '../../model/brand.model';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { TriggerSaveProduct } from '../../state-management/actions/product.action';
+import { ResponseObject } from '../../model/response.object';
+import { take, tap } from 'rxjs';
+import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner.action';
 
 @Component({
   selector: 'app-product',
@@ -17,6 +22,8 @@ import { BrandModel } from '../../model/brand.model';
 export class ProductComponent implements OnInit, OnDestroy {
 
   constructor(private readonly _productService: ProductService,
+              private readonly _action$: Actions,
+              private readonly _store: Store,
               private _modalService: BsModalService,){
   }
 
@@ -27,24 +34,31 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.subsink.add(
-      this.getProducts()
+      this.getProducts(),
+      this.listenToSaveProduct()
     );
+  }
+
+  listenToSaveProduct(){
+    return this._action$.pipe(ofActionSuccessful(TriggerSaveProduct))
+      .subscribe(()=> {
+        this.getProducts();
+      });
   }
 
   getProducts() {
-    return this._productService.getProducts().subscribe(
-      (response) => {
-        if (response.IsOk) {
-          this.productList = response.Results[0];
-        } 
-      },
-    );
-  }
+   this._store.dispatch(new ShowSpinner());
+   return this._productService.getProducts().pipe(
+    take(1),
+    tap((resp: ResponseObject) => {
+      if (resp && resp.IsOk) {
+        this.productList = resp.Results[0];
+      }
+      
+      this._store.dispatch(new HideSpinner());
+    })
+  ).subscribe();
 
-  
-
-  ngOnDestroy(){
-    this.subsink.unsubscribe();
   }
 
   createProduct() {
@@ -73,5 +87,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonCancel;
     this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonUpdate;
+  }
+
+  ngOnDestroy(){
+    this.subsink.unsubscribe();
   }
 }
