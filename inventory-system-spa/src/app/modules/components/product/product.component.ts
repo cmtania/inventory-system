@@ -1,17 +1,15 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, TemplateRef, viewChild, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { SubSink } from 'subsink';
 import { ProductModel } from '../../model/product.model';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { ProductModalComponent } from '../modal/product-modal/product-modal.component';
 import { CONSTANTS } from '../../model/constants.model';
-import { BrandService } from '../../services/brand.service';
-import { BrandModel } from '../../model/brand.model';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { TriggerSaveProduct } from '../../state-management/actions/product.action';
-import { ResponseObject } from '../../model/response.object';
-import { take, tap } from 'rxjs';
+import { finalize, take, tap } from 'rxjs';
 import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner.action';
+import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   selector: 'app-product',
@@ -21,9 +19,12 @@ import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner
 })
 export class ProductComponent implements OnInit, OnDestroy {
 
+  @ViewChild('toastTemplate') toastTemplate!: TemplateRef<any>;
+
   constructor(private readonly _productService: ProductService,
               private readonly _action$: Actions,
               private readonly _store: Store,
+              private readonly _toastService: ToastService,
               private _modalService: BsModalService,){
   }
 
@@ -31,6 +32,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   productList = new Array<ProductModel>();
   modalTitle: string = "";
   bsModalRef?: BsModalRef;
+
+  toastMessage: string = "";
 
   ngOnInit(){
     this.subsink.add(
@@ -50,11 +53,19 @@ export class ProductComponent implements OnInit, OnDestroy {
    this._store.dispatch(new ShowSpinner());
    return this._productService.getProducts().pipe(
     take(1),
-    tap((resp: ResponseObject) => {
-      if (resp && resp.IsOk) {
-        this.productList = resp.Results[0];
+    tap((resp: any) => {
+      console.log("resp", resp);
+      if (!resp.IsOk) {
+        this.toastMessage = "An error occurred while loading the products.";
+        this._toastService.show(this.toastTemplate,"ERROR");
+
+       return;
       }
-      
+      this.toastMessage = "The products have been loaded successfully.";
+      this._toastService.show(this.toastTemplate,"ERROR");
+      this.productList = resp.Results[0];
+    }),
+    finalize(() => {
       this._store.dispatch(new HideSpinner());
     })
   ).subscribe();

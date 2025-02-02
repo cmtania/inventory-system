@@ -1,8 +1,7 @@
 
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgxsModule } from '@ngxs/store';
 import { AppRoutingModule } from './app-routing.module';
@@ -11,20 +10,26 @@ import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { SpinnerComponent } from './modules/shared/spinner/spinner.component';
 import { SpinnerState } from './modules/state-management/states/spinner.state';
+import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { ToastsContainerComponent } from './modules/shared/toast/toast-container.component';
 
 
 @NgModule({
     declarations: [
         AppComponent,
-        SpinnerComponent
+        SpinnerComponent,
+        ToastsContainerComponent
     ],
     imports: [
-    CommonModule,
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    NgxsModule.forRoot([SpinnerState], { developmentMode: /** !environment.production */ false })
-],
+        CommonModule,
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        NgbToastModule,
+        NgTemplateOutlet,
+        NgxsModule.forRoot([SpinnerState], { developmentMode: /** !environment.production */ false })
+    ],
+    exports: [],
     providers:[
         {
         provide: APP_INITIALIZER,

@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { WebApi } from "./webapi.service";
 import { catchError, concatMap, map, of } from "rxjs";
 import { ResponseObject } from "../model/response.object";
-import { ProductModel } from "../model/product.model";
 import { AppConfig } from "../../core/app-config-service";
 
 
@@ -31,6 +30,7 @@ export class ProductService {
           }),
           catchError((respError: any) => {
             if (respError instanceof ResponseObject) {
+              
               return of(new ResponseObject(false, [], ['Error']));
             }
     

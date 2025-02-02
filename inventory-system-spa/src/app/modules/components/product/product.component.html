@@ -31,7 +31,7 @@
             }
             @empty {
                 <tr >
-                    <td colspan="6">Empty product list</td>
+                    <td colspan="7" class="text-center">No available product.</td>
                   </tr>
             }
           
@@ -39,3 +39,5 @@
       </table>
     </div>
   </div>
+
+<ng-template #toastTemplate> {{toastMessage}} </ng-template>
