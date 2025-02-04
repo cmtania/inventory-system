@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Models\ResponseModel\" />
+    <Folder Include="AppScript\" />
   </ItemGroup>
 
 </Project>
