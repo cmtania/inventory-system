@@ -10,7 +10,7 @@ import { SubSink } from 'subsink';
 import { CategoryService } from '../../../services/category.service';
 import { CategoryModel } from '../../../model/category.model';
 import { ResponseObject } from '../../../model/response.object';
-import { take, tap } from 'rxjs';
+import { finalize, take, tap } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { TriggerSaveProduct } from '../../../state-management/actions/product.action';
 import { HideSpinner, ShowSpinner } from '../../../state-management/actions/spinner.action';
@@ -86,21 +86,15 @@ export class ProductModalComponent implements OnInit, OnDestroy {
       tap((resp: ResponseObject) => {
         if (resp && resp.IsOk) {
           console.log("saved");
+          this.bsModalRef.hide();
           this._store.dispatch(new TriggerSaveProduct());
-          this.closeModal();
-
-          return;
         }
-
-        this._store.dispatch(new HideSpinner());
+      }),
+      finalize(() => {
+          this._store.dispatch(new HideSpinner());
       })
     ).subscribe();
 
-  }
-
-  closeModal(){
-    const productModal = new (window as any).bootstrap.Modal("#productmodal");
-    productModal.hide();
   }
 
   private getBrands() {

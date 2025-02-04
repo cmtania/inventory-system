@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, TemplateRef, viewChild, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { SubSink } from 'subsink';
 import { ProductModel } from '../../model/product.model';
@@ -30,10 +30,17 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   subsink = new SubSink();
   productList = new Array<ProductModel>();
+  filteredProducts = new Array<ProductModel>();
+  paginatedProducts = new Array<ProductModel>();
   modalTitle: string = "";
   bsModalRef?: BsModalRef;
 
   toastMessage: string = "";
+  searchTerm: string = "";
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 0;
+  totalPagesArray: number[] = [];
 
   ngOnInit(){
     this.subsink.add(
@@ -55,21 +62,45 @@ export class ProductComponent implements OnInit, OnDestroy {
     take(1),
     tap((resp: any) => {
       console.log("resp", resp);
-      if (!resp.IsOk) {
-        this.toastMessage = "An error occurred while loading the products.";
-        this._toastService.show(this.toastTemplate,"ERROR");
-
-       return;
+      if (resp.IsOk) {
+        this.productList = resp.Results[0];
+        this.filterProducts();
+        return;
       }
-      this.toastMessage = "The products have been loaded successfully.";
+
+      this.toastMessage = "An error occurred while loading the products.";
       this._toastService.show(this.toastTemplate,"ERROR");
-      this.productList = resp.Results[0];
+
     }),
     finalize(() => {
       this._store.dispatch(new HideSpinner());
     })
   ).subscribe();
 
+  }
+
+  filterProducts() {
+    this.filteredProducts = this.productList.filter(product =>
+      product.ProductName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      product.ProductCode.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      product.ProductDescription.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      product.Brand.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      product.Category.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+
+    this.totalPages = Math.ceil(this.filteredProducts.length / this.pageSize);
+    this.totalPagesArray = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    this.changePage(1);
+  }
+
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedProducts = this.filteredProducts.slice(startIndex, endIndex);
   }
 
   createProduct() {

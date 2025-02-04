@@ -109,3 +109,13 @@
 .span-create:hover {
     font-weight: bold;
 }
+
+ul.pagination {
+  li {
+    cursor: pointer;
+  }
+
+  li.page-item.disabled {
+    cursor: not-allowed;
+  }
+}
