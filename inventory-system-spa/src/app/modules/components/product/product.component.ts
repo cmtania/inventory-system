@@ -10,6 +10,8 @@ import { TriggerSaveProduct } from '../../state-management/actions/product.actio
 import { finalize, take, tap } from 'rxjs';
 import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner.action';
 import { ToastService } from '../../shared/toast/toast.service';
+import { isUndefined } from '@ngxs/store/operators/utils';
+import { ResponseObject } from '../../model/response.object';
 
 @Component({
   selector: 'app-product',
@@ -20,6 +22,7 @@ import { ToastService } from '../../shared/toast/toast.service';
 export class ProductComponent implements OnInit, OnDestroy {
 
   @ViewChild('toastTemplate') toastTemplate!: TemplateRef<any>;
+  @ViewChild('deleteConfirmation') deleteConfirmation!: TemplateRef<any>;
 
   constructor(private readonly _productService: ProductService,
               private readonly _action$: Actions,
@@ -41,6 +44,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   totalPages: number = 0;
   totalPagesArray: number[] = [];
+
+  productIdToDelete: number = 0;
 
   ngOnInit(){
     this.subsink.add(
@@ -107,6 +112,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     const initialState: ModalOptions = {
       initialState: {
         title: CONSTANTS.PRODUCT_CreateModalTitle,
+        productId: 0,
+        isUpdate: false
       },
       backdrop: 'static',
       keyboard: false
@@ -120,7 +127,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     console.log("product", productId);
     const initialState: ModalOptions = {
       initialState: {
-        title: CONSTANTS.PRODUCT_EditModalTitle
+        title: CONSTANTS.PRODUCT_EditModalTitle,
+        productId: productId,
+        isUpdate: true
       },
       class: "modal-lg",
       backdrop: 'static',
@@ -129,6 +138,30 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonCancel;
     this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonUpdate;
+  }
+
+  confirmDelete(productId: number) {
+    this.productIdToDelete = productId;
+    const initialState: ModalOptions = {
+      backdrop: 'static',
+      keyboard: false
+    };
+    this.bsModalRef = this._modalService.show(this.deleteConfirmation, initialState);
+  }
+
+  deleteProduct() {
+    this._productService.deleteProduct(this.productIdToDelete).pipe(
+          take(1),
+          tap((resp: ResponseObject) => {
+            if (resp && resp.IsOk) {
+              this.bsModalRef?.hide();
+              this._store.dispatch(new TriggerSaveProduct());
+            }
+          }),
+          finalize(() => {
+              this._store.dispatch(new HideSpinner());
+          })
+        ).subscribe();
   }
 
   ngOnDestroy(){

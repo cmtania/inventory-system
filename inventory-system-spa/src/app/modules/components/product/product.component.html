@@ -32,8 +32,9 @@
           <td>{{product.ProductDescription}}</td>
           <td>{{product.Brand}}</td>
           <td>{{product.Category}}</td>
-          <td width="150px" class="td-action"><button class="btn-edit" (click)="editProduct(product.ProductId)"
-              role="button">Edit</button> <button class="btn-delete" role="button">Delete</button></td>
+          <td width="150px" class="td-action">
+            <button class="btn-edit" (click)="editProduct(product.ProductId)" role="button">Edit</button> 
+              <button class="btn-delete" (click)="confirmDelete(product.ProductId)" role="button">Delete</button></td>
         </tr>
         }
         @empty {
@@ -65,3 +66,16 @@
 </div>
 
 <ng-template #toastTemplate> {{toastMessage}} </ng-template>
+
+<ng-template #deleteConfirmation let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Confirm Delete</h5>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this product?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="bsModalRef?.hide()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="deleteProduct()">Delete</button>
+  </div>
+</ng-template>

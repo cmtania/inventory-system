@@ -9,4 +9,7 @@ export class CONSTANTS {
     static readonly LABEL_ButtonUpdate: string = "Save Changes";
     static readonly LABEL_ButtonClose: string = "Close";
     static readonly LABEL_ButtonCancel: string = "Cancel";
+
+    static readonly TRAN_CreateProduct: string = "CP";
+    static readonly TRAN_EditProduct: string = "EP";
 }

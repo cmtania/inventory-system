@@ -71,3 +71,5 @@
     <button type="button" class="btn btn-custom-close" (click)="bsModalRef.hide()">{{ closeBtnName }}</button>
     <button type="button" class="btn btn-save" (click)="saveProduct()" [disabled]="!productForm.valid">{{ saveBtnName }}</button>
   </div>
+
+  <ng-template #toastTemplate> {{toastMessage}} </ng-template>

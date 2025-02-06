@@ -11,37 +11,37 @@ import { AppConfig } from "../../core/app-config-service";
 })
 
 export class ProductService {
-    constructor(private webApi: WebApi){
+    constructor(private webApi: WebApi){}
 
-    }
-
-    private readonly baseUrl = AppConfig.settings.webApiUrl;
+    private readonly baseUrl = `${AppConfig.settings.webApiUrl}Product`;
 
     getProducts() {
-        const url = `${this.baseUrl}Product/getproducts`;
-        return this.webApi.httpGet(url).pipe(
-          concatMap((respObj: any) => {
-            console.log('respObj', respObj);
-            if (!respObj.IsOk) {
-              throw new ResponseObject(false, [], ['error']);
-            }
-    
-            return of(new ResponseObject(true, respObj.Results, []));
-          }),
-          catchError((respError: any) => {
-            if (respError instanceof ResponseObject) {
-              
-              return of(new ResponseObject(false, [], ['Error']));
-            }
-    
-            return of(new ResponseObject(false, [], ['Error']));
-          })
-        );
+      const url = `${this.baseUrl}/getproducts`;
+
+      return this.httpGet(url);
+    }
+
+    getProductById(productId: number) {
+      const url = `${this.baseUrl}/getproduct/${productId}`;
+      
+      return this.httpGet(url);
     }
 
     saveProduct(product: any) {
-      const url = `${this.baseUrl}Product/saveproduct`;
-      return this.webApi.httpPost(url, product).pipe(
+      const url = `${this.baseUrl}/saveproduct`;
+      return this.httpPost(url, product);
+    }
+
+    updateProduct(product: any) {
+      const url = `${this.baseUrl}/updateproduct`;
+
+      return this.httpPost(url, product);
+    }
+
+    deleteProduct(productId: number) {
+      const url = `${this.baseUrl}/deleteproduct/${productId}`;
+
+      return this.webApi.httpDelete(url).pipe(
         concatMap((respObj: any) => {
           console.log('respObj', respObj);
           if (!respObj.IsOk) {
@@ -58,6 +58,46 @@ export class ProductService {
           return of(new ResponseObject(false, [], ['Error']));
         })
       );
-  }
+    }
+
+    private httpPost(url: string, data: any) {
+      return this.webApi.httpPost(url, data).pipe(
+        concatMap((respObj: any) => {
+          console.log('respObj', respObj);
+          if (!respObj.IsOk) {
+            throw new ResponseObject(false, [], ['error']);
+          }
+  
+          return of(new ResponseObject(true, respObj.Results, []));
+        }),
+        catchError((respError: any) => {
+          if (respError instanceof ResponseObject) {
+            return of(new ResponseObject(false, [], ['Error']));
+          }
+  
+          return of(new ResponseObject(false, [], ['Error']));
+        })
+      );
+    }
+
+    private httpGet(url: string) {
+      return this.webApi.httpGet(url).pipe(
+        concatMap((respObj: any) => {
+          console.log('respObj', respObj);
+          if (!respObj.IsOk) {
+            throw new ResponseObject(false, [], ['error']);
+          }
+
+          return of(new ResponseObject(true, respObj.Results, []));
+        }),
+        catchError((respError: any) => {
+          if (respError instanceof ResponseObject) {
+            return of(new ResponseObject(false, [], ['Error']));
+          }
+
+          return of(new ResponseObject(false, [], ['Error']));
+        })
+      );
+    }
 }
 

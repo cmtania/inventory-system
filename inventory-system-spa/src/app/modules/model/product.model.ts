@@ -2,6 +2,7 @@ export class ProductModel {
     ProductId: number;
     ProductCode: string;
     ProductName: string;
+    UnitPrice: number;
     ProductDescription: string;
     BrandId: number;
     Brand: string;
@@ -12,6 +13,7 @@ export class ProductModel {
         productId: number,
         productCode: string,
         productName: string,
+        unitPrice: number,
         productDescription: string,
         brandId: number,
         brand: string,
@@ -21,6 +23,7 @@ export class ProductModel {
     this.ProductId = productId;
     this.ProductCode = productCode;
     this.ProductName = productName;
+    this.UnitPrice = unitPrice;
     this.ProductDescription = productDescription;
     this.BrandId = brandId;
     this.Brand = brand;

@@ -9,9 +9,7 @@ import { Observable } from "rxjs";
 
 export class WebApi {
 
-    constructor(private httpClient: HttpClient){
-
-    }
+    constructor(private httpClient: HttpClient){}
 
      customHeaders = new HttpHeaders({
         "Content-Type": "application/json",
@@ -19,11 +17,16 @@ export class WebApi {
       });
 
     httpPost(url: string, body: any):Observable<any> {
-        return  this.httpClient.post(url, body, { headers: this.customHeaders });
+        return this.httpClient.post(url, body, { headers: this.customHeaders });
     }
 
     httpGet(url: string, body: any = null):Observable<any> {
         console.log("HTTP GET", body);
-        return  this.httpClient.get(url, {headers: this.customHeaders});
+        return this.httpClient.get(url, {headers: this.customHeaders});
     }
+
+    httpDelete(url: string, body: any = null):Observable<any> {
+      console.log("HTTP GET", body);
+      return this.httpClient.delete(url, {headers: this.customHeaders});
+  }
 }
