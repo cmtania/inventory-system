@@ -45,7 +45,7 @@ namespace InventorySystem.Service.Repository
         public async Task UpdateProduct(TrnProduct product)
         {
             product.UpdtDt = DateTime.Now;
-             _dbContext.Update(product);
+            _dbContext.Update(product);
 
             await _dbContext.SaveChangesAsync();
         }

@@ -77,7 +77,7 @@ namespace InventorySystem.Service.Services
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_GetProduct, Message = ex.Message };
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_GetProduct, Message = ex.InnerException.Message };
                 apiResponse.Messages = [errorMessage];
 
                 return apiResponse;
@@ -107,7 +107,7 @@ namespace InventorySystem.Service.Services
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.Message }];
+                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }];
 
                 return apiResponse;
             }
@@ -142,7 +142,7 @@ namespace InventorySystem.Service.Services
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.Message };
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.InnerException.Message };
                 apiResponse.Messages = [errorMessage];
 
                 return apiResponse;
@@ -174,7 +174,7 @@ namespace InventorySystem.Service.Services
             catch (Exception ex)
             {
                 apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = ex.Message };
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = ex.InnerException.Message };
                 apiResponse.Messages = [errorMessage];
 
                 return apiResponse;

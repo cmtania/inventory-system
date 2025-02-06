@@ -61,7 +61,7 @@ namespace InventorySystem.Service
                 options.AddPolicy("CorsPolicy",
                     builder => builder
                         .WithOrigins("http://localhost:1995")
-                        .WithMethods("GET", "POST")
+                        .WithMethods("GET", "POST", "DELETE")
                         .AllowAnyHeader()
                         .AllowCredentials());
             });
