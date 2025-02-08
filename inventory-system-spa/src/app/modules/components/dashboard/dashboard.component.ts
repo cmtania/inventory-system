@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
@@ -8,6 +8,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+
+  constructor() {}
+  ngOnInit(): void {
+  }
+
 
 }
