@@ -11,39 +11,39 @@ import { HttpCommonService } from "./http-common.service";
   providedIn: 'root',
 })
 
-export class ProductService {
+export class InventoryService {
     constructor(private _httpCommonService: HttpCommonService){}
 
-    private readonly baseUrl = `${AppConfig.settings.webApiUrl}Product`;
+    private readonly baseUrl = `${AppConfig.settings.webApiUrl}Inventory`;
 
-    getProducts() {
-      const url = `${this.baseUrl}/getproducts`;
+    getInventory() {
+      const url = `${this.baseUrl}/getinventory`;
 
       return this._httpCommonService.httpGet(url);
     }
 
-    getProductById(productId: number) {
-      const url = `${this.baseUrl}/getproduct/${productId}`;
+    getInventoryById(invId: number) {
+      const url = `${this.baseUrl}/getinventory/${invId}`;
       
       return this._httpCommonService.httpGet(url);
     }
 
-    saveProduct(product: any) {
+    saveInventory(inventory: any) {
       const url = `${this.baseUrl}/save`;
-      return this._httpCommonService.httpPost(url, product);
+
+      return this._httpCommonService.httpPost(url, inventory);
     }
 
-    updateProduct(product: any) {
+    updateInventory(inventory: any) {
       const url = `${this.baseUrl}/update`;
 
-      return this._httpCommonService.httpPost(url, product);
+      return this._httpCommonService.httpPost(url, inventory);
     }
 
-    deleteProduct(productId: number) {
-      const url = `${this.baseUrl}/delete/${productId}`;
+    deleteInventory(inventoryId: number) {
+      const url = `${this.baseUrl}/delete/${inventoryId}`;
 
       return this._httpCommonService.httpDelete(url);
-        
     }
 }
 

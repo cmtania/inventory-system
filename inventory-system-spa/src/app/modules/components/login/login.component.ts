@@ -21,6 +21,6 @@ export class LoginComponent {
     login(){
       console.log("login");
       console.log(this.username, this.password);
-      this.router.navigate(["/home/dashboard"]);
+      this.router.navigate(["/dashboard"]);
     }
 }

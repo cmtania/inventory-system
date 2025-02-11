@@ -4,14 +4,16 @@ import { NgModule } from "@angular/core";
 import { DashboardComponent } from "../dashboard/dashboard.component";
 import { ReportsComponent } from "../reports/reports.component";
 import { ProductComponent } from "../product/product.component";
+import { InventoryComponent } from "../inventory/inventory.component";
 
 const routes: Routes = [{
     path: "",
     component: LayoutComponent,
       children: [
-          { path: "", redirectTo: "/home/dashboard", pathMatch: "full"},
+          { path: "", redirectTo: "/dashboard", pathMatch: "full"},
           { path: "dashboard", component: DashboardComponent},
           { path: "products", component: ProductComponent },
+          { path: "inventory", component: InventoryComponent },
           { path: "reports", component: ReportsComponent },
       ],       
 },

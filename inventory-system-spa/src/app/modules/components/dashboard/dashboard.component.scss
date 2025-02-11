@@ -4,18 +4,19 @@
   
   .card {
     border-radius: 0px !important;
+    border: 0px;
   }
   
   .card-body {
-    background-color:#a3be91;
+    background-color:#ffffff;
+    cursor: default;
 
     p {
         font-size: 1.1rem;
       }
   }
   
-  
-  
+
   .text-center {
     text-align: center;
   }
@@ -26,4 +27,13 @@
 
   .card-total {
     font-size: 4rem;
+    color: #008000;
+  }
+
+  .card-total.low-stock{
+    color: #FF0000;
+  }
+
+  .card-title {
+    color:#0F4D0F;
   }
