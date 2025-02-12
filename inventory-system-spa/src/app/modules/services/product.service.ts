@@ -12,7 +12,7 @@ import { HttpCommonService } from "./http-common.service";
 })
 
 export class ProductService {
-    constructor(private _httpCommonService: HttpCommonService){}
+    constructor(private readonly _httpCommonService: HttpCommonService){}
 
     private readonly baseUrl = `${AppConfig.settings.webApiUrl}Product`;
 

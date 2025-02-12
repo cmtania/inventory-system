@@ -16,6 +16,7 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ProductModalComponent } from "../modal/product-modal/product-modal.component";
 import { BrandService } from "../../services/brand.service";
 import { InventoryComponent } from "../inventory/inventory.component";
+import { InventoryModalComponent } from "../modal/inventory-modal/inventory-modal.component";
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { InventoryComponent } from "../inventory/inventory.component";
     ProductComponent,
     InventoryComponent,
     ProductModalComponent,
+    InventoryModalComponent
 
   ],
   exports:[MatButtonModule],  

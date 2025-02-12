@@ -8,10 +8,10 @@ import { AppConfig } from '../../core/app-config-service';
   providedIn: 'root',
 })
 export class HttpCommonService {
-  constructor(private webApi: WebApi) {}
+  constructor(private readonly _webApi: WebApi) {}
 
   public httpPost(url: string, data: any) {
-    return this.webApi.httpPost(url, data).pipe(
+    return this._webApi.httpPost(url, data).pipe(
       concatMap((respObj: any) => {
         console.log('respObj', respObj);
         if (!respObj.IsOk) {
@@ -31,7 +31,7 @@ export class HttpCommonService {
   }
 
   public httpGet(url: string) {
-    return this.webApi.httpGet(url).pipe(
+    return this._webApi.httpGet(url).pipe(
       concatMap((respObj: any) => {
         console.log('respObj', respObj);
         if (!respObj.IsOk) {
@@ -51,7 +51,7 @@ export class HttpCommonService {
   }
 
   public httpDelete(url: string) {
-    return this.webApi.httpDelete(url).pipe(
+    return this._webApi.httpDelete(url).pipe(
       concatMap((respObj: any) => {
         console.log('respObj', respObj);
         if (!respObj.IsOk) {
