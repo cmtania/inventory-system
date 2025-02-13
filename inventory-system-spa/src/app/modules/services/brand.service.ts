@@ -12,14 +12,12 @@ import { AppConfig } from "../../core/app-config-service";
 })
 
 export class BrandService {
-    constructor(private readonly _webApi: WebApi){
+    constructor(private readonly _webApi: WebApi){}
 
-    }
-
-    private readonly baseUrl = AppConfig.settings.webApiUrl;
+    private readonly baseUrl = `${AppConfig.settings.webApiUrl}Brand`;
 
     getBrands() {
-        return this._webApi.httpGet(`${this.baseUrl}Brand/getbrands`).pipe(
+        return this._webApi.httpGet(`${this.baseUrl}/list`).pipe(
           concatMap((respObj: any) => {
             console.log('respObj', respObj);
             if (!respObj.IsOk) {

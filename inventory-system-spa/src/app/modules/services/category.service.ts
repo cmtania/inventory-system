@@ -14,10 +14,10 @@ import { AppConfig } from "../../core/app-config-service";
 export class CategoryService {
     constructor(private readonly _webApi: WebApi){}
 
-    private readonly baseUrl = AppConfig.settings.webApiUrl;
+    private readonly baseUrl = `${AppConfig.settings.webApiUrl}Category`;
 
     getCategories() {
-        return this._webApi.httpGet(`${this.baseUrl}Category/getcategory`).pipe(
+        return this._webApi.httpGet(`${this.baseUrl}/list`).pipe(
           concatMap((respObj: any) => {
             console.log('respObj', respObj);
             if (!respObj.IsOk) {

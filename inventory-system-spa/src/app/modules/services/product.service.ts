@@ -17,13 +17,13 @@ export class ProductService {
     private readonly baseUrl = `${AppConfig.settings.webApiUrl}Product`;
 
     getProducts() {
-      const url = `${this.baseUrl}/getproducts`;
+      const url = `${this.baseUrl}/list`;
 
       return this._httpCommonService.httpGet(url);
     }
 
     getProductById(productId: number) {
-      const url = `${this.baseUrl}/getproduct/${productId}`;
+      const url = `${this.baseUrl}/${productId}`;
       
       return this._httpCommonService.httpGet(url);
     }
