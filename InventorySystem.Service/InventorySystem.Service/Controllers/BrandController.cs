@@ -14,7 +14,7 @@ namespace InventorySystem.Service.Controllers
             _brandService = brandService;
         }
 
-        [Route("getbrands")]
+        [Route("list")]
         [HttpGet]
         public async Task<IActionResult> GetProductsAsync()
         {
@@ -23,7 +23,7 @@ namespace InventorySystem.Service.Controllers
             return Ok(brands);
         }
 
-        [Route("getbrand/{brandId}")]
+        [Route("{brandId}")]
         [HttpGet]
         public async Task<IActionResult> GetBrandByIdAsync(int brandId)
         {

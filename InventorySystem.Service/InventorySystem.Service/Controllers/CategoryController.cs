@@ -14,7 +14,7 @@ namespace InventorySystem.Service.Controllers
             _categoryService = categoryService;
         }
 
-        [Route("getcategory")]
+        [Route("list")]
         [HttpGet]
         public async Task<IActionResult> GetCategoriessAsync()
         {
@@ -23,7 +23,7 @@ namespace InventorySystem.Service.Controllers
             return Ok(categories);
         }
 
-        [Route("getcategory/{categoryId}")]
+        [Route("{categoryId}")]
         [HttpGet]
         public async Task<IActionResult> GetBrandByIdAsync(int categoryId)
         {

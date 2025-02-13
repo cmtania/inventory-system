@@ -14,7 +14,7 @@ namespace InventorySystem.Service.Controllers
             _productService = productService;
         }
 
-        [Route("getproducts")]
+        [Route("list")]
         [HttpGet]
         public async Task<IActionResult> GetProductsAsync()
         {
@@ -23,7 +23,7 @@ namespace InventorySystem.Service.Controllers
             return Ok(products);
         }
 
-        [Route("getproduct/{productId}")]
+        [Route("{productId}")]
         [HttpGet]
         public async Task<IActionResult> GetProductAsync(int productId)
         {
@@ -32,7 +32,7 @@ namespace InventorySystem.Service.Controllers
             return Ok(product);
         }
 
-        [Route("saveproduct")]
+        [Route("save")]
         [HttpPost]
         public async Task<IActionResult> SaveProductAsync([FromBody] SaveProductRequest product)
         {
@@ -41,7 +41,7 @@ namespace InventorySystem.Service.Controllers
             return Ok(saveResponse);
         }
 
-        [Route("updateproduct")]
+        [Route("update")]
         [HttpPost]
         public async Task<IActionResult> UpdateProductAsync([FromBody] ProductRequest product)
         {
@@ -50,7 +50,7 @@ namespace InventorySystem.Service.Controllers
             return Ok(updateResponse);
         }
 
-        [Route("deleteproduct/{productId}")]
+        [Route("delete/{productId}")]
         [HttpDelete]
         public async Task<IActionResult> UpdateProductAsync(int productId)
         {
