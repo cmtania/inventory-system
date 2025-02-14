@@ -15,10 +15,11 @@
     public class InventoryConstants
     {
 
-        public static string TRAN_GetInventory= "Get Inventory List";
-        public static string TRAN_Savenventory = "Save Product";
-        public static string TRAN_Updatenventory = "Update Inventory";
-        public static string TRAN_Deletenventory = "Delete Inventory";
+        public static string TRAN_GetInvList= "Get Inventory List";
+        public static string TRAN_GetInvById = "Get Inventory By ID";
+        public static string TRAN_SaveInv = "Save Inventory";
+        public static string TRAN_UpdateInv = "Update Inventory";
+        public static string TRAN_DeleteInv = "Delete Inventory";
         public static string TRAN_SaveSuccessMessage = "Inventory saved successfully.";
         public static string TRAN_InvIsMissing = "Inventory is missing.";
 

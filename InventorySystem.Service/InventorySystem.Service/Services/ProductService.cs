@@ -39,16 +39,18 @@ namespace InventorySystem.Service.Services
                     });
                 }
 
-                apiResponse.Results = [productsVm];
-
-                return apiResponse;
+                return new ApiResponse { IsOk = true, Results = [productsVm] };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_GetProduct, Message = ex.Message }];
-
-                return apiResponse;
+                return new ApiResponse
+                {
+                    IsOk = false,
+                    Messages = [ new ResponseMessage
+                       { Title = ProductConstants.TRAN_GetProduct,
+                          Message = ex.InnerException.Message
+                       }]
+                };
             }
         }
         public async Task<ApiResponse> GetProductByIdAsync(int productId)
@@ -70,22 +72,21 @@ namespace InventorySystem.Service.Services
                     Category = product.Ctgry.Label
                 };
 
-                apiResponse.Results = [productVm];
-
-                return apiResponse;
+                return new ApiResponse { IsOk = true, Results = [productVm] };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_GetProduct, Message = ex.InnerException.Message };
-                apiResponse.Messages = [errorMessage];
-
-                return apiResponse;
+                return new ApiResponse {
+                    IsOk = false,
+                    Messages = [ new ResponseMessage
+                       { Title = ProductConstants.TRAN_GetProduct,
+                          Message = ex.InnerException.Message
+                       }]
+                };
             }
         }
         public async Task<ApiResponse> SaveProductAsync(SaveProductRequest product)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var productModel = new TrnProduct
@@ -100,16 +101,24 @@ namespace InventorySystem.Service.Services
 
                 await _productRepository.SaveProduct(productModel);
 
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }];
-
-                return apiResponse;
+                return new ApiResponse
+                {
+                    IsOk = true,
+                    Messages = [ new ResponseMessage
+                       { Title = ProductConstants.TRAN_SaveProduct,
+                          Message = ProductConstants.TRAN_SaveSuccessMessage
+                       }]
+                };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }];
-
-                return apiResponse;
+                return new ApiResponse{
+                    IsOk = false,
+                    Messages = [ new ResponseMessage
+                       { Title = ProductConstants.TRAN_SaveProduct,
+                          Message = ex.InnerException.Message
+                       }]
+                 };
             }
         }
         public async Task<ApiResponse> UpdateProductAsync(ProductRequest product)
