@@ -18,10 +18,9 @@ namespace InventorySystem.Service.Services
 
         public async Task<ApiResponse> ListAsync()
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
-                var inventories = await _inventoryRepository.GetList();
+                var inventories = await _inventoryRepository.GetInventoryList();
                 var inventoryVm = new List<InventoryViewModel>();
 
                 foreach (var inv in inventories)
@@ -29,152 +28,153 @@ namespace InventorySystem.Service.Services
                     inventoryVm.Add(new InventoryViewModel
                     {
                         ProductId = inv.PrdctId,
-                        ProductName = inv.PrdctNm,
+                        ProductName = inv.Prdct.PrdctNm,
                         Supplier = inv.Supplier,
-                        Quantity = inv.Quantity,
-                        UnitPrice = inv.UnitPrice,
+                        Quantity = inv.Qntty,
+                        UnitPrice = inv.Unit,
                     });
                 }
 
-                apiResponse.Results = [inventoryVm];
-
-                return apiResponse;
+                return new ApiResponse { IsOk = true, Results = [inventoryVm] };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = InventoryConstants.TRAN_GetInventory, Message = ex.Message }];
-
-                return apiResponse;
+                return new ApiResponse
+                {
+                    IsOk = false,
+                    Messages = [ new ResponseMessage
+                               { Title = InventoryConstants.TRAN_GetInvList,
+                                  Message = ex.InnerException?.Message
+                               }]
+                };
             }
         }
-        public async Task<ApiResponse> GetProductByIdAsync(int productId)
+        public async Task<ApiResponse> GetInvByIdAsync(int inventoryId)
         {
             var apiResponse = new ApiResponse { IsOk = true };
             try
             {
-                var product = await _productRepository.GetProduct(productId);
-                var productVm = new ProductViewModel
+                var inventory = await _inventoryRepository.GetInventoryById(inventoryId);
+                var inventoryVM = new InventoryViewModel
                 {
-                    ProductId = product.PrdctId,
-                    ProductCode = product.PrdctCd,
-                    ProductName = product.PrdctNm,
-                    ProductDescription = product.PrdctDscrptn,
-                    UnitPrice = product.UntPrc,
-                    BrandId = product.BrndId,
-                    Brand = product.Brnd.Label,
-                    CategoryId = product.CtgryId,
-                    Category = product.Ctgry.Label
+                    ProductId = inventory.PrdctId,
+                    ProductName = inventory.Prdct.PrdctNm,
+                    Supplier = inventory.Supplier,
+                    UnitPrice = inventory.Unit,
+                    Quantity = inventory.Qntty,
                 };
 
-                apiResponse.Results = [productVm];
-
-                return apiResponse;
+                return new ApiResponse{ IsOk = true, Results = [inventoryVM] };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_GetProduct, Message = ex.InnerException.Message };
-                apiResponse.Messages = [errorMessage];
-
-                return apiResponse;
-            }
-        }
-        public async Task<ApiResponse> SaveProductAsync(SaveProductRequest product)
-        {
-            var apiResponse = new ApiResponse { IsOk = true };
-            try
-            {
-                var productModel = new TrnProduct
-                {
-                    PrdctCd = product.ProductCode,
-                    PrdctNm = product.ProductName,
-                    UntPrc = product.UnitPrice,
-                    PrdctDscrptn = product.ProductDescription,
-                    BrndId = product.BrandId,
-                    CtgryId = product.CategoryId,
+                return new ApiResponse
+                { IsOk = false, 
+                  Messages = [ new ResponseMessage
+                               { Title = InventoryConstants.TRAN_GetInvById,
+                                  Message = ex.InnerException?.Message
+                               }]
                 };
-
-                await _productRepository.SaveProduct(productModel);
-
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }];
-
-                return apiResponse;
-            }
-            catch (Exception ex)
-            {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }];
-
-                return apiResponse;
             }
         }
-        public async Task<ApiResponse> UpdateProductAsync(ProductRequest product)
+        //public async Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequest inventory)
+        //{
+        //    var apiResponse = new ApiResponse { IsOk = true };
+        //    try
+        //    {
+        //        var productModel = new TrnInventory
+        //        {
+        //            PrdctId = inventory.ProductId,
+        //            Supplier = inventory.Supplier,
+        //            Qntty = inventory.Quantity,
+        //            Unit = inventory.UnitPrice,
+        //        };
+
+        //        await _productRepository.SaveProduct(productModel);
+
+        //        apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }];
+
+        //        return apiResponse;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponse.IsOk = false;
+        //        apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }];
+
+        //        return apiResponse;
+        //    }
+        //}
+        //public async Task<ApiResponse> UpdateProductAsync(ProductRequest product)
+        //{
+        //    var apiResponse = new ApiResponse { IsOk = true };
+        //    try
+        //    {
+        //        var productToUpdate = await _productRepository.GetProduct(product.ProductId);
+        //        if (productToUpdate == null)
+        //        {
+        //            apiResponse.IsOk = false;
+        //            var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ProductConstants.TRAN_ProductIsMissing };
+        //            apiResponse.Messages = [errorMessage];
+
+        //            return apiResponse;
+        //        }
+        //        productToUpdate.PrdctCd = product.ProductCode;
+        //        productToUpdate.PrdctNm = product.ProductName;
+        //        productToUpdate.UntPrc = product.UnitPrice;
+        //        productToUpdate.PrdctDscrptn = product.ProductDescription;
+        //        productToUpdate.BrndId = product.BrandId;
+        //        productToUpdate.CtgryId = product.CategoryId;
+        //        productToUpdate.UpdtDt = DateTime.Now;
+        //        productToUpdate.UpdtBy = "User";
+
+        //        await _productRepository.UpdateProduct(productToUpdate);
+
+        //        return apiResponse;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponse.IsOk = false;
+        //        var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.InnerException.Message };
+        //        apiResponse.Messages = [errorMessage];
+
+        //        return apiResponse;
+        //    }
+        //}
+        public async Task<ApiResponse> DeleteInventoryAsync(int inventoryId)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
-                var productToUpdate = await _productRepository.GetProduct(product.ProductId);
-                if (productToUpdate == null)
+                var invToPurge = await _inventoryRepository.GetInventoryById(inventoryId);
+                if (invToPurge == null)
                 {
-                    apiResponse.IsOk = false;
-                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ProductConstants.TRAN_ProductIsMissing };
-                    apiResponse.Messages = [errorMessage];
-
-                    return apiResponse;
+                    return new ApiResponse
+                    {
+                        IsOk = true,
+                        Messages = [ new ResponseMessage
+                               { Title = InventoryConstants.TRAN_DeleteInv,
+                                  Message = ProductConstants.TRAN_ProductIsMissing
+                               }]
+                    };
                 }
-                productToUpdate.PrdctCd = product.ProductCode;
-                productToUpdate.PrdctNm = product.ProductName;
-                productToUpdate.UntPrc = product.UnitPrice;
-                productToUpdate.PrdctDscrptn = product.ProductDescription;
-                productToUpdate.BrndId = product.BrandId;
-                productToUpdate.CtgryId = product.CategoryId;
-                productToUpdate.UpdtDt = DateTime.Now;
-                productToUpdate.UpdtBy = "User";
 
-                await _productRepository.UpdateProduct(productToUpdate);
+                invToPurge.Purge = true;
+                invToPurge.UpdtDt = DateTime.Now;
+                invToPurge.UpdtBy = "User";
 
-                return apiResponse;
+                await _inventoryRepository.DeleteInventory(invToPurge);
+
+                return new ApiResponse { IsOk = true }; ;
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.InnerException.Message };
-                apiResponse.Messages = [errorMessage];
-
-                return apiResponse;
-            }
-        }
-        public async Task<ApiResponse> DeleteProductAsync(int productId)
-        {
-            var apiResponse = new ApiResponse { IsOk = true };
-            try
-            {
-                var productToPurge = await _productRepository.GetProduct(productId);
-                if (productToPurge == null)
+                return new ApiResponse
                 {
-                    apiResponse.IsOk = false;
-                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = ProductConstants.TRAN_ProductIsMissing };
-                    apiResponse.Messages = [errorMessage];
-
-                    return apiResponse;
-                }
-
-                productToPurge.Purge = true;
-                productToPurge.UpdtDt = DateTime.Now;
-                productToPurge.UpdtBy = "User";
-
-                await _productRepository.DeleteProduct(productToPurge);
-
-                return apiResponse;
-            }
-            catch (Exception ex)
-            {
-                apiResponse.IsOk = false;
-                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = ex.InnerException.Message };
-                apiResponse.Messages = [errorMessage];
-
-                return apiResponse;
+                    IsOk = false,
+                    Messages = [ new ResponseMessage
+                               { Title = InventoryConstants.TRAN_DeleteInv,
+                                  Message = ex.InnerException.Message
+                               }]
+                };
             }
         }
     }

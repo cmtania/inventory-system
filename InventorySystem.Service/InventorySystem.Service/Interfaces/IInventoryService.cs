@@ -10,8 +10,8 @@ namespace InventorySystem.Service.Interfaces
     {
         Task<ApiResponse> ListAsync();
         Task<ApiResponse> GetInvByIdAsync(int inventoryId);
-        Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequest inventory);
-        Task<ApiResponse> UpdateInventoryAsync(InventoryRequest inventory);
+        //Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequest inventory);
+        //Task<ApiResponse> UpdateInventoryAsync(InventoryRequest inventory);
         Task<ApiResponse> DeleteInventoryAsync(int inventoryId);
     }
 }
