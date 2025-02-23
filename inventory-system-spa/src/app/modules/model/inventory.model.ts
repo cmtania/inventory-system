@@ -1,10 +1,13 @@
 export class InventoryModel {
     InventoryId: number;
     ProductId: string;
-    ProductName: string;
     Supplier: string;
     Quantity: number;
     UnitPrice: string;
+    ProductName: string;
+    ProductCode: string;
+    Brand: string;
+    Category: string;
 
     constructor(
         inventoryId: number,
@@ -12,7 +15,10 @@ export class InventoryModel {
         productName: string,
         supplier: string,
         quantity: number,
-        unitPrice: string
+        unitPrice: string,
+        productCode: string,
+        brand: string,
+        category: string
     ){
     this.InventoryId = inventoryId;
     this.ProductId = productId;
@@ -20,5 +26,8 @@ export class InventoryModel {
     this.Supplier = supplier;
     this.Quantity = quantity;
     this.UnitPrice = unitPrice;
+    this.ProductCode = productCode;
+    this.Brand = brand;
+    this.Category = category;
     }
 }

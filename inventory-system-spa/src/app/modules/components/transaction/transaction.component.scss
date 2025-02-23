@@ -1,0 +1,71 @@
+.minimalist-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+}
+
+.minimalist-table th, .minimalist-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    position: relative;
+}
+
+.minimalist-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    text-align: left;
+}
+
+.minimalist-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.minimalist-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.minimalist-table .product-details {
+    position: relative;
+}
+
+.minimalist-table .product-code,
+.minimalist-table .product-name,
+.minimalist-table .product-description,
+.minimalist-table .product-brand,
+.minimalist-table .product-category {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.minimalist-table {
+    .product-code {
+        font-weight: bold;
+    }
+
+    .product-name {
+        color: #555;
+    }
+
+    .product-description {
+        color: #777;
+    }
+
+    .product-brand,
+    .minimalist-table .product-category {
+    color: #999;
+    }
+    
+    .product-price {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        color: #333;
+
+    } 
+
+}
+

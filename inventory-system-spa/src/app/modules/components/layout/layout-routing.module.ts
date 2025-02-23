@@ -5,6 +5,7 @@ import { DashboardComponent } from "../dashboard/dashboard.component";
 import { ReportsComponent } from "../reports/reports.component";
 import { ProductComponent } from "../product/product.component";
 import { InventoryComponent } from "../inventory/inventory.component";
+import { TransactionComponent } from "../transaction/transaction.component";
 
 const routes: Routes = [{
     path: "",
@@ -14,6 +15,7 @@ const routes: Routes = [{
           { path: "dashboard", component: DashboardComponent},
           { path: "products", component: ProductComponent },
           { path: "inventory", component: InventoryComponent },
+          { path: "transaction", component: TransactionComponent },
           { path: "reports", component: ReportsComponent },
       ],       
 },

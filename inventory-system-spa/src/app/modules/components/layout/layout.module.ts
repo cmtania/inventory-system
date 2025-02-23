@@ -17,6 +17,7 @@ import { ProductModalComponent } from "../modal/product-modal/product-modal.comp
 import { BrandService } from "../../services/brand.service";
 import { InventoryComponent } from "../inventory/inventory.component";
 import { InventoryModalComponent } from "../modal/inventory-modal/inventory-modal.component";
+import { TransactionComponent } from "../transaction/transaction.component";
 
 @NgModule({
   imports: [
@@ -36,8 +37,8 @@ import { InventoryModalComponent } from "../modal/inventory-modal/inventory-moda
     ProductComponent,
     InventoryComponent,
     ProductModalComponent,
-    InventoryModalComponent
-
+    InventoryModalComponent,
+    TransactionComponent
   ],
   exports:[MatButtonModule],  
   providers:[ 
