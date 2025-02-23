@@ -16,6 +16,8 @@ namespace InventorySystem.Service.Repository
         {
             var inventoryList = await _dbContext.TrnInventories
                              .Include(b => b.Prdct)
+                             .Include(b => b.Prdct.Brnd)
+                             .Include(b => b.Prdct.Ctgry)
                              .Where(p => p.Purge == false)
                              .ToListAsync();
 

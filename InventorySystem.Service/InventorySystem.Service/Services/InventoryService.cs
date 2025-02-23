@@ -29,10 +29,13 @@ namespace InventorySystem.Service.Services
                     {
                         InventoryId = inv.InvId,
                         ProductId = inv.PrdctId,
-                        ProductName = inv.Prdct.PrdctNm,
                         Supplier = inv.Supplier,
                         Quantity = inv.Qntty,
                         UnitPrice = inv.UntPrc,
+                        ProductName = inv.Prdct.PrdctNm,
+                        ProductCode = inv.Prdct.PrdctCd,
+                        Brand = inv.Prdct.Brnd.Label,
+                        Category = inv.Prdct.Ctgry.Label,
                     });
                 }
 

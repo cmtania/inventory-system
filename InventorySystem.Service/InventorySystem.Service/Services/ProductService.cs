@@ -31,6 +31,7 @@ namespace InventorySystem.Service.Services
                         ProductId = prod.PrdctId,
                         ProductCode = prod.PrdctCd,
                         ProductName = prod.PrdctNm,
+                        UnitPrice = prod.UntPrc,
                         ProductDescription = prod.PrdctDscrptn,
                         BrandId = prod.BrndId,
                         Brand = prod.Brnd.Label,
