@@ -4,7 +4,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Middlewares;
-using InventorySystem.Service.Models;
 using InventorySystem.Service.Models.AccountModel;
 using InventorySystem.Service.Models.DatabaseModel;
 using InventorySystem.Service.Repository;
@@ -87,6 +86,8 @@ namespace InventorySystem.Service
             builder.RegisterType<BrandRepository>().As<IBrandRepository>();
             builder.RegisterType<CategoryService>().As<ICategoryService>();
             builder.RegisterType<CategoryRepository>().As<ICategoryRepository>();
+            builder.RegisterType<InventoryService>().As<IInventoryService>();
+            builder.RegisterType<InventoryRepository>().As<IInventoryRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

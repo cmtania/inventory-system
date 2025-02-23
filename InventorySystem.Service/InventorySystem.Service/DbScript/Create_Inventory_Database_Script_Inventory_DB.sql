@@ -197,7 +197,7 @@ CREATE TABLE [Inv].[Trn_Inventory] (
     PrdctId int NOT NULL,
 	[Supplier] varchar(20) NOT NULL,
 	Qntty int NOT NULL,
-	Unit float NOT NULL,
+	UntPrc float NOT NULL,
 	CrtDt datetime NOT NULL,
 	CrtBy varchar(50) NOT NULL,
 	UpdtDt datetime NOT NULL,
@@ -245,7 +245,7 @@ ADD CONSTRAint PK_Trn_Sales PRIMARY KEY (SlsId);
 GO
 
 ALTER TABLE [Inv].[Trn_Sales] 
-ADD CONSTRAint FK_Trn_Sales_PymntTypId
+ADD CONSTRAINT FK_Trn_Sales_PymntTypId
 FOREIGN KEY (PymntTypId) REFERENCES [Inv].[Bas_PaymentTypes] (PymntTypId);
 GO
 

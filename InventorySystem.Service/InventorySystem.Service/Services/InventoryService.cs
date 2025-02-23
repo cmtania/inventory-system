@@ -27,11 +27,12 @@ namespace InventorySystem.Service.Services
                 {
                     inventoryVm.Add(new InventoryViewModel
                     {
+                        InventoryId = inv.InvId,
                         ProductId = inv.PrdctId,
                         ProductName = inv.Prdct.PrdctNm,
                         Supplier = inv.Supplier,
                         Quantity = inv.Qntty,
-                        UnitPrice = inv.Unit,
+                        UnitPrice = inv.UntPrc,
                     });
                 }
 
@@ -60,7 +61,7 @@ namespace InventorySystem.Service.Services
                     ProductId = inventory.PrdctId,
                     ProductName = inventory.Prdct.PrdctNm,
                     Supplier = inventory.Supplier,
-                    UnitPrice = inventory.Unit,
+                    UnitPrice = inventory.UntPrc,
                     Quantity = inventory.Qntty,
                 };
 
@@ -77,69 +78,67 @@ namespace InventorySystem.Service.Services
                 };
             }
         }
-        //public async Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequest inventory)
-        //{
-        //    var apiResponse = new ApiResponse { IsOk = true };
-        //    try
-        //    {
-        //        var productModel = new TrnInventory
-        //        {
-        //            PrdctId = inventory.ProductId,
-        //            Supplier = inventory.Supplier,
-        //            Qntty = inventory.Quantity,
-        //            Unit = inventory.UnitPrice,
-        //        };
+        public async Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequest inventory)
+        {
+            var apiResponse = new ApiResponse { IsOk = true };
+            try
+            {
+                var inventoryModel = new TrnInventory
+                {
+                    PrdctId = inventory.ProductId,
+                    Supplier = inventory.Supplier,
+                    Qntty = inventory.Quantity,
+                    UntPrc = inventory.UnitPrice,
+                };
 
-        //        await _productRepository.SaveProduct(productModel);
+                await _inventoryRepository.SaveInventory(inventoryModel);
 
-        //        apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }];
+                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }];
 
-        //        return apiResponse;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        apiResponse.IsOk = false;
-        //        apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }];
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsOk = false;
+                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }];
 
-        //        return apiResponse;
-        //    }
-        //}
-        //public async Task<ApiResponse> UpdateProductAsync(ProductRequest product)
-        //{
-        //    var apiResponse = new ApiResponse { IsOk = true };
-        //    try
-        //    {
-        //        var productToUpdate = await _productRepository.GetProduct(product.ProductId);
-        //        if (productToUpdate == null)
-        //        {
-        //            apiResponse.IsOk = false;
-        //            var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ProductConstants.TRAN_ProductIsMissing };
-        //            apiResponse.Messages = [errorMessage];
+                return apiResponse;
+            }
+        }
+        public async Task<ApiResponse> UpdateInventoryAsync(SaveInventoryRequest invRequest)
+        {
+            var apiResponse = new ApiResponse { IsOk = true };
+            try
+            {
+                var inventory = await _inventoryRepository.GetInventoryById(invRequest.InventoryId);
+                if (inventory == null)
+                {
+                    apiResponse.IsOk = false;
+                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ProductConstants.TRAN_ProductIsMissing };
+                    apiResponse.Messages = [errorMessage];
 
-        //            return apiResponse;
-        //        }
-        //        productToUpdate.PrdctCd = product.ProductCode;
-        //        productToUpdate.PrdctNm = product.ProductName;
-        //        productToUpdate.UntPrc = product.UnitPrice;
-        //        productToUpdate.PrdctDscrptn = product.ProductDescription;
-        //        productToUpdate.BrndId = product.BrandId;
-        //        productToUpdate.CtgryId = product.CategoryId;
-        //        productToUpdate.UpdtDt = DateTime.Now;
-        //        productToUpdate.UpdtBy = "User";
+                    return apiResponse;
+                }
+                inventory.PrdctId = invRequest.ProductId;
+                inventory.Supplier = invRequest.Supplier;
+                inventory.Qntty = invRequest.Quantity;
+                inventory.UntPrc = invRequest.UnitPrice;
+                inventory.UpdtDt = DateTime.Now;
+                inventory.UpdtBy = "User";
 
-        //        await _productRepository.UpdateProduct(productToUpdate);
+                await _inventoryRepository.UpdateInventory(inventory);
 
-        //        return apiResponse;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        apiResponse.IsOk = false;
-        //        var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.InnerException.Message };
-        //        apiResponse.Messages = [errorMessage];
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsOk = false;
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.InnerException.Message };
+                apiResponse.Messages = [errorMessage];
 
-        //        return apiResponse;
-        //    }
-        //}
+                return apiResponse;
+            }
+        }
         public async Task<ApiResponse> DeleteInventoryAsync(int inventoryId)
         {
             try

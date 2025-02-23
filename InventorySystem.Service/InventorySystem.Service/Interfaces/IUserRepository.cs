@@ -1,5 +1,4 @@
-﻿using InventorySystem.Service.Models;
-using InventorySystem.Service.Models.DatabaseModel;
+﻿using InventorySystem.Service.Models.DatabaseModel;
 
 namespace InventorySystem.Service.Interfaces
 {

@@ -27,6 +27,10 @@ namespace InventorySystem.Service.Controllers
         [HttpGet]
         public async Task<IActionResult> GetInventoryAsync(int inventoryId)
         {
+            if (inventoryId <= 0){
+                return BadRequest("Paremeters is not valid."); 
+            }
+        
             var inventory = await _inventoryService.GetInvByIdAsync(inventoryId);
 
             return Ok(inventory);
@@ -36,6 +40,10 @@ namespace InventorySystem.Service.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveInventoryAsync([FromBody] SaveInventoryRequest inventory)
         {
+            if (inventory == null){
+                return BadRequest("Paremeters is not valid.");
+            }
+
             var saveResponse = await _inventoryService.SaveInventoryAsync(inventory);
 
             return Ok(saveResponse);
@@ -43,8 +51,13 @@ namespace InventorySystem.Service.Controllers
 
         [Route("update")]
         [HttpPost]
-        public async Task<IActionResult> UpdateInventoryAsync([FromBody] InventoryRequest inventory)
+        public async Task<IActionResult> UpdateInventoryAsync([FromBody] SaveInventoryRequest inventory)
         {
+            if (inventory == null)
+            {
+                return BadRequest("Paremeters is not valid.");
+            }
+
             var updateResponse = await _inventoryService.UpdateInventoryAsync(inventory);
 
             return Ok(updateResponse);
@@ -54,6 +67,11 @@ namespace InventorySystem.Service.Controllers
         [HttpDelete]
         public async Task<IActionResult> UpdateInventoryAsync(int inventoryId)
         {
+            if (inventoryId <= 0)
+            {
+                return BadRequest("Paremeters is not valid.");
+            }
+
             var deleteResponse = await _inventoryService.DeleteInventoryAsync(inventoryId);
 
             return Ok(deleteResponse);

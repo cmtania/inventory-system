@@ -11,6 +11,7 @@
 
     public class SaveInventoryRequest
     {
+        public int InventoryId { get; set; }
         public int ProductId { get; set; }
         public string Supplier { get; set; }
         public int Quantity { get; set; }

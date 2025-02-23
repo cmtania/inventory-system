@@ -13,7 +13,7 @@ public partial class TrnInventory
 
     public int Qntty { get; set; }
 
-    public int Unit { get; set; }
+    public double UntPrc { get; set; }
 
     public DateTime CrtDt { get; set; }
 

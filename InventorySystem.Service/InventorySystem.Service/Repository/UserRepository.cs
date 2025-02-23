@@ -1,5 +1,4 @@
 ﻿using InventorySystem.Service.Interfaces;
-using InventorySystem.Service.Models;
 using InventorySystem.Service.Models.DatabaseModel;
 using Microsoft.EntityFrameworkCore;
 
