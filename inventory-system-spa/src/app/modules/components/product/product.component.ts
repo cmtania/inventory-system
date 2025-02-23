@@ -4,7 +4,6 @@ import { SubSink } from 'subsink';
 import { ProductModel } from '../../model/product.model';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { ProductModalComponent } from '../modal/product-modal/product-modal.component';
-import { CONSTANTS } from '../../model/constants.model';
 import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { TriggerSaveProduct } from '../../state-management/actions/product.action';
 import { finalize, take, tap } from 'rxjs';
@@ -12,6 +11,7 @@ import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner
 import { ToastService } from '../../shared/toast/toast.service';
 import { isUndefined } from '@ngxs/store/operators/utils';
 import { ResponseObject } from '../../model/response.object';
+import { COMMON, PRODUCT } from '../../model/constants.model';
 
 @Component({
   selector: 'app-product',
@@ -28,7 +28,7 @@ export class ProductComponent implements OnInit, OnDestroy {
               private readonly _action$: Actions,
               private readonly _store: Store,
               private readonly _toastService: ToastService,
-              private _modalService: BsModalService,){
+              private _modalService: BsModalService){
   }
 
   subsink = new SubSink();
@@ -49,9 +49,10 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.subsink.add(
-      this.getProducts(),
       this.listenToSaveProduct()
     );
+
+    this.getProducts();
   }
 
   listenToSaveProduct(){
@@ -63,7 +64,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   getProducts() {
    this._store.dispatch(new ShowSpinner());
-   return this._productService.getProducts().pipe(
+   this._productService.getProducts().pipe(
     take(1),
     tap((resp: any) => {
       console.log("resp", resp);
@@ -111,7 +112,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   createProduct() {
     const initialState: ModalOptions = {
       initialState: {
-        title: CONSTANTS.PRODUCT_CreateModalTitle,
+        title: PRODUCT.CreateModalTitle,
         productId: 0,
         isUpdate: false
       },
@@ -119,15 +120,15 @@ export class ProductComponent implements OnInit, OnDestroy {
       keyboard: false
     };
     this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
-    this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonClose;
-    this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonSave;
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
   }
 
   editProduct(productId: number){
     console.log("product", productId);
     const initialState: ModalOptions = {
       initialState: {
-        title: CONSTANTS.PRODUCT_EditModalTitle,
+        title: PRODUCT.EditModalTitle,
         productId: productId,
         isUpdate: true
       },
@@ -136,8 +137,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       keyboard: false
     };
     this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
-    this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonCancel;
-    this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonUpdate;
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonCancel;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonUpdate;
   }
 
   confirmDelete(productId: number) {
@@ -150,13 +151,17 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct() {
-    this._productService.deleteProduct(this.productIdToDelete).pipe(
-          take(1),
+    this._productService.deleteProduct(this.productIdToDelete)
+    .pipe(take(1),
           tap((resp: ResponseObject) => {
             if (resp && resp.IsOk) {
               this.bsModalRef?.hide();
               this._store.dispatch(new TriggerSaveProduct());
+              return;
             }
+
+            this.toastMessage = "An error occurred while deleting the product.";
+            this._toastService.show(this.toastTemplate,"ERROR");
           }),
           finalize(() => {
               this._store.dispatch(new HideSpinner());

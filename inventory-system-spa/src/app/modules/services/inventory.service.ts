@@ -1,7 +1,4 @@
 import { Injectable } from "@angular/core";
-import { WebApi } from "./webapi.service";
-import { catchError, concatMap, map, of } from "rxjs";
-import { ResponseObject } from "../model/response.object";
 import { AppConfig } from "../../core/app-config-service";
 import { HttpCommonService } from "./http-common.service";
 
@@ -16,14 +13,14 @@ export class InventoryService {
 
     private readonly baseUrl = `${AppConfig.settings.webApiUrl}Inventory`;
 
-    getInventory() {
-      const url = `${this.baseUrl}/getinventory`;
+    getInventoryList() {
+      const url = `${this.baseUrl}/list`;
 
       return this._httpCommonService.httpGet(url);
     }
 
     getInventoryById(invId: number) {
-      const url = `${this.baseUrl}/getinventory/${invId}`;
+      const url = `${this.baseUrl}/${invId}`;
       
       return this._httpCommonService.httpGet(url);
     }

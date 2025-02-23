@@ -1,0 +1,111 @@
+.btn-edit {
+    background-color: #b9d9ee;
+    border-radius: 3px;
+    border: 1px solid #7aa7c7;
+    box-sizing: border-box;
+    color: #39739d;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: .5;
+    margin: 0;
+    outline: none;
+    padding: 8px .8em;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+  
+  .btn-edit:hover,
+  .btn-edit:focus {
+    background-color: #6f9cbd;
+    color: #fff;
+  }
+  
+  .btn-edit:focus {
+    box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+  }
+  
+  .btn-edit:active {
+    background-color: #a0c7e4;
+    box-shadow: none;
+    color: #2c5777;
+  }
+  
+  .btn-delete {
+      background-color: #ebb3b3;
+      border-radius: 3px;
+      border: 1px solid #bd7d7d;
+      box-sizing: border-box;
+      color: #8d2727;
+      cursor: pointer;
+      display: inline-block;
+      font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: .5;
+      margin: 0;
+      outline: none;
+      padding: 8px .8em;
+      position: relative;
+      text-align: center;
+      text-decoration: none;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      vertical-align: baseline;
+      white-space: nowrap;
+    }
+    
+    .btn-delete:hover,
+    .btn-delete:focus {
+      background-color: #ad6060;
+      color: #fff;
+    }
+    
+    .btn-delete:focus {
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+    }
+    
+    .btn-delete:active {
+      background-color: #a0c7e4;
+      box-shadow: none;
+      color: #2c5777;
+    }
+  
+    table td.td-action{
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+  
+    @media (max-width: 720px) { /* Adjust the breakpoint as needed */
+      .td-action {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 5px; /* Space between buttons when stacked */
+      }
+  
+      .td-action,
+      .th-action {
+          width: 100px;
+      }
+  }
+
+  .span-create {
+    padding-bottom: 10px;
+    cursor: pointer;
+    color: #39739d;
+    width: 190px;
+}
+
+.span-create:hover {
+    font-weight: bold;
+}
