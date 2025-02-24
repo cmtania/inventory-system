@@ -3,7 +3,7 @@ export class InventoryModel {
     ProductId: string;
     Supplier: string;
     Quantity: number;
-    UnitPrice: string;
+    UnitPrice: number;
     ProductName: string;
     ProductCode: string;
     Brand: string;
@@ -15,7 +15,7 @@ export class InventoryModel {
         productName: string,
         supplier: string,
         quantity: number,
-        unitPrice: string,
+        unitPrice: number,
         productCode: string,
         brand: string,
         category: string

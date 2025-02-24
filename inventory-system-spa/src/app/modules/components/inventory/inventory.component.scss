@@ -21,23 +21,25 @@
     touch-action: manipulation;
     vertical-align: baseline;
     white-space: nowrap;
+
+    &:hover,
+    &:focus {
+      background-color: #6f9cbd;
+      color: #fff;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+    }
+
+    &:active {
+      background-color: #a0c7e4;
+      box-shadow: none;
+      color: #2c5777;
+    }
   }
   
-  .btn-edit:hover,
-  .btn-edit:focus {
-    background-color: #6f9cbd;
-    color: #fff;
-  }
-  
-  .btn-edit:focus {
-    box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
-  }
-  
-  .btn-edit:active {
-    background-color: #a0c7e4;
-    box-shadow: none;
-    color: #2c5777;
-  }
+
   
   .btn-delete {
       background-color: #ebb3b3;

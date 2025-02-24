@@ -1,50 +1,58 @@
+
+.transaction {
+    background-color: #f9f9f9;
+}
+
+
 .minimalist-table {
     border-collapse: collapse;
     width: 100%;
     font-family: 'Arial', sans-serif;
-}
 
-.minimalist-table th, .minimalist-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    position: relative;
-}
+    .product-code,
+    .product-name,
+    .product-description,
+    .product-brand,
+    .product-category {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
 
-.minimalist-table th {
-    background-color: #f2f2f2;
-    color: #333;
-    text-align: left;
-}
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        position: relative;
+        font-weight: 100;
+    }
 
-.minimalist-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+    th {
+        background-color: #bb5e43	;
+        color: #fff;
+        text-align: left;
+    }
 
-.minimalist-table tr:hover {
-    background-color: #f1f1f1;
-}
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
 
-.minimalist-table .product-details {
-    position: relative;
-}
+    tr:hover {
+        background-color: #db1c1c;
+    }
 
-.minimalist-table .product-code,
-.minimalist-table .product-name,
-.minimalist-table .product-description,
-.minimalist-table .product-brand,
-.minimalist-table .product-category {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 14px;
-}
+    .product-details {
+        position: relative;
+    }
 
-.minimalist-table {
     .product-code {
         font-weight: bold;
+        color: #613123	;
     }
 
     .product-name {
-        color: #555;
+        color: #000000;
+        font-weight: bold;
     }
 
     .product-description {
@@ -63,9 +71,67 @@
         padding: 2px 8px;
         border-radius: 4px;
         font-weight: bold;
-        color: #333;
+        color: #e0620e;
 
-    } 
-
+    }
 }
+
+
+.btn-to-cart {
+    background-color: #b9d9ee;
+    border-radius: 3px;
+    border: 1px solid #7aa7c7;
+    box-sizing: border-box;
+    color: #39739d;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: .5;
+    margin: 0;
+    outline: none;
+    padding: 8px .8em;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+
+    &:hover,
+    &:focus {
+      background-color: #6f9cbd;
+      color: #fff;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+    }
+
+    &:active {
+      background-color: #a0c7e4;
+      box-shadow: none;
+      color: #2c5777;
+    }
+  }
+
+  .item-list {
+
+    .cart-header {
+        background-color: #bb5e43;
+       
+      }
+
+      th {
+        padding: 8px;
+        position: relative;
+        font-weight: 100;
+        color: #fff;
+      }
+
+  }
 
