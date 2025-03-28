@@ -33,6 +33,7 @@ namespace InventorySystem.Service.Services
                         Quantity = inv.Qntty,
                         UnitPrice = inv.UntPrc,
                         ProductName = inv.Prdct.PrdctNm,
+                        ProductDescription = inv.Prdct.PrdctDscrptn,
                         ProductCode = inv.Prdct.PrdctCd,
                         Brand = inv.Prdct.Brnd.Label,
                         Category = inv.Prdct.Ctgry.Label,

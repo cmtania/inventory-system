@@ -5,6 +5,7 @@ export class InventoryModel {
     Quantity: number;
     UnitPrice: number;
     ProductName: string;
+    ProductDescription: string;
     ProductCode: string;
     Brand: string;
     Category: string;
@@ -13,6 +14,7 @@ export class InventoryModel {
         inventoryId: number,
         productId: string,
         productName: string,
+        productDescription: string,
         supplier: string,
         quantity: number,
         unitPrice: number,
@@ -23,6 +25,7 @@ export class InventoryModel {
     this.InventoryId = inventoryId;
     this.ProductId = productId;
     this.ProductName = productName;
+    this.ProductDescription = productDescription;
     this.Supplier = supplier;
     this.Quantity = quantity;
     this.UnitPrice = unitPrice;

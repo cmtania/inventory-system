@@ -49,16 +49,36 @@ export class TransactionComponent implements OnInit {
   }
 
   addToCart(item: InventoryModel): void {
+    console.log("item", item);
 
     const selectedItem = this.fb.group({
       ItemId: [this.carts.length + 1],
       ProductName: [item.ProductName],
+      Description: [item.ProductDescription],
       Quantity: [1, Validators.required],
       UnitPrice: [item.UnitPrice],
-      RowTotal: [(item.UnitPrice * item.Quantity)]
+      RowTotal: [(item.UnitPrice * 1)]
     });
 
     this.carts.push(selectedItem);
+  }
+
+  deleteCartItem(index: number): void {
+    this.carts.removeAt(index);
+  }
+  
+  decreaseQuantity(index: number): void {
+    const control = this.carts.at(index).get('Quantity');
+    if (control && control.value > 1) {
+      control.setValue(control.value - 1);
+    }
+  }
+
+  increaseQuantity(index: number): void {
+    const control = this.carts.at(index).get('Quantity');
+    if (control) {
+      control.setValue(control.value + 1);
+    }
   }
 
 
