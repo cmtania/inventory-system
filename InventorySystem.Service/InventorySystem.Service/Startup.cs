@@ -2,6 +2,8 @@
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Azure.Core;
+using InventorySystem.Service.Constants;
 using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Middlewares;
 using InventorySystem.Service.Models.AccountModel;
@@ -12,7 +14,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace InventorySystem.Service
 {
@@ -36,7 +40,6 @@ namespace InventorySystem.Service
                 jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
-            // Jwt configuration starts here
             var jwtIssuer = Configuration.GetSection("Jwt:Issuer").Get<string>();
             var jwtKey = Configuration.GetSection("Jwt:Key").Get<string>();
 
@@ -68,6 +71,14 @@ namespace InventorySystem.Service
             // add db connection
             var connectionString = Configuration.GetSection("DBConnection").Get<string>();
             services.AddDbContext<InventoryDBContext>(options => options.UseSqlServer(connectionString));
+
+            // services register here
+            /*
+              Lifetime   Instance Count                   Best Used For                      Example Use Cases
+              Transient  New instance per request.        Lightweight, stateless services.   Logging, simple utilities
+              Scoped     One instance per HTTP request.   Request - level state management.  EF Core DbContext, business logic per request
+              Singleton  One instance for the entire app. Shared state, expensive objects.   Caching, configuration, logging
+            */
 
             var container = new ContainerBuilder();
             container.Populate(services);
