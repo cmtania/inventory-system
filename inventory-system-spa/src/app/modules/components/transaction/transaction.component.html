@@ -4,6 +4,7 @@
   </div>
   <div class="row transaction-wrapper">
     <div class="col-md-5">
+      <form [formGroup]="transactionForm">
       <div class="table-wrap">
         <table class="table">
           <thead class="thead-primary">
@@ -15,31 +16,29 @@
               <th class="action">&nbsp;</th>
             </tr>
           </thead>
-          <tbody class="scrollable-tbody">
-            @for (item of inventoryItems; track item.ProductId; let index = $index) {
-            <tr class="alert" role="alert">
+          <tbody class="scrollable-tbody" formArrayName="products">
+            <tr *ngFor="let item of products.controls; let index = index" [formGroupName]="index" class="alert" role="alert">
               <td class="photo">
                 <img src="assets/images/cart.png" class="img-fluid my-3" width="50px" alt="product">
               </td>
               <td class="details">
                 <div class="item">
-                  <span class="title">{{item.ProductName}}</span>
-                  <span class="description d-block">{{item.ProductDescription}}</span>
+                  <span class="title">{{getProductValue(index, 'ProductName')}}</span>
+                  <span class="description d-block">{{getProductValue(index, 'Description')}}</span>
                 </div>
               </td>
-              <td class="price">{{item.UnitPrice | currency }}</td>
+              <td class="price">{{getProductValue(index, 'UnitPrice') | currency }}</td>
               <td class="quantity">
                 <div class="input-group">
-                  <input type="number" name="quantity" class="quantity form-control input-number" value="2" min="1" max="100">
+                  <input type="number" formControlName="Quantity" class="quantity form-control input-number" min="1" max="100">
                 </div>
               </td>
               <td class="action text-center">
-                <button type="button" class="addto-cart" (click)="addToCart(item)" data-dismiss="alert" aria-label="Add to cart">
+                <button type="button" class="addto-cart" (click)="addToCart(item, index)" data-dismiss="alert" aria-label="Add to cart">
                   <span aria-hidden="true"><i class="fa-solid fa-cart-plus"></i></span>
                 </button>
               </td>
             </tr>
-          }
           </tbody>
           <tfoot>
             <tr>
@@ -52,6 +51,7 @@
           </tfoot>
         </table>
       </div>
+      </form>
     </div>
     <div class="col-md-6 cart-wrap">
       <form [formGroup]="transactionForm">
@@ -79,13 +79,13 @@
                   <span class="description d-block">{{cart.get('Description')?.value}}</span>
                 </div>
               </td>
-              <td class="price">{{cart.get('UnitPrice')?.value}}</td>
+              <td class="price">{{cart.get('UnitPrice')?.value | currency}}</td>
               <td class="quantity">
                 <div class="input-group">
-                  <input type="number" name="quantity" class="quantity form-control input-number" value="2" min="1" max="100">
+                  <input type="number" name="quantity" (change)="quantityChange(index)" formControlName="Quantity" class="quantity form-control input-number" min="1" max="100">
                 </div>
               </td>
-              <td class="sub-total">$1,000.98</td>
+              <td class="sub-total">{{cart.get('RowTotal')?.value | currency}}</td>
               <td class="action text-center">
                 <button type="button" class="close" (click)="deleteCartItem(index)" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>
@@ -96,8 +96,8 @@
           <tfoot>
             <tr>
               <td colspan="3">&nbsp;</td>
-              <td class="total-items text-center"><span>All items: 4</span></td>
-              <td class="overall-total"><span>$2,001.96</span></td>
+              <td class="total-items text-center"><span>All items: {{carts.length}}</span></td>
+              <td class="overall-total"><span>{{getDetailsValue('Total') | currency}}</span></td>
               <td class="text-center"><button type="button" class="btn btn-place-order" >Submit</button></td>
             </tr>
           </tfoot>
