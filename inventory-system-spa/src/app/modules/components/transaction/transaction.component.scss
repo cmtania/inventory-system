@@ -1,5 +1,6 @@
 .transaction-wrapper{
   margin: 0 1rem 0 1rem;
+  padding-top: 2rem;
 }
 .table-wrap {
     overflow-x: auto;
@@ -10,7 +11,7 @@
     max-height: 400px !important;
     overflow-y: auto;
 
-    thead {
+    thead.product-list {
       th {
         color: #fff;
         padding: 17px;
@@ -32,6 +33,7 @@
         th.price {
           width: 8%;
         }
+        
         th.quantity {
           width: 8%;
         }
@@ -181,4 +183,39 @@ tfoot {
   display: table;
   width: 100%;
   table-layout: fixed;
+}
+
+/* In cart table */
+thead.in-cart {
+  th {
+    color: #fff;
+    padding: 17px;
+    text-align: left;
+    font-weight: 400;
+    background-color: #99b19c;
+    font-size: 14px;
+  }
+  th.photo {
+    width: 7%;
+  }
+  
+  th.cart {
+    width: 25%;
+  }
+  
+  th.price {
+    width: 7%;
+  }
+
+  th.quantity {
+    width: 7%;
+  }
+  
+  th.total {
+    width: 9%;
+  }
+
+  th.action {
+    width: 3%;
+  }
 }

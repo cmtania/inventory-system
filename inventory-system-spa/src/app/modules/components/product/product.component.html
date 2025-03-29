@@ -1,5 +1,73 @@
 <div class="container-xxl mt-5">
   <div class="row">
+    <div class="row">
+      <h2 class="mb-4">Products</h2>
+      <div class="create-wrapper">
+        <span class="span-create" (click)="createProduct()">Add new item</span>
+        <span class="span-create" (click)="createProduct()">Add new brand</span>
+        <span class="span-create" (click)="createProduct()">Add new category</span>
+      </div>
+      
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchTerm"
+          (input)="filterProducts()">
+      </div>
+    </div>
+  </div>
+  <div class="row transaction-wrapper">
+    <div class="col-12 col-md-12">
+      <div class="table-wrap">
+        <table class="table">
+          <thead class="thead-primary product-list">
+            <tr>
+              <th class="code">Code</th>
+              <th class="product">Item</th>
+              <th class="brand">Brand</th>
+              <th class="category">Category</th>
+              <th class="action">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody class="scrollable-tbody">
+            @for (product of filteredProducts; track product.ProductId; let index = $index) {
+            <tr class="alert" role="alert">
+              <td class="code">
+                {{product.ProductCode}}
+              </td>
+              <td class="product">
+                <div class="item">
+                  <span class="title">{{product.ProductName}}</span>
+                  <span class="description d-block">{{product.ProductDescription}}</span>
+                </div>
+              </td>
+              <td class="brand">{{product.Brand}}</td>
+              <td class="category">{{product.Category}}</td>
+              <td class="action text-center">
+                  <button class="btn-edit" (click)="editProduct(product.ProductId)" role="button">Edit</button> 
+                  <button class="btn-delete" (click)="confirmDelete(product.ProductId)" role="button">Delete</button>
+              </td>
+            </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="footer-title">Category</td>
+              <td colspan="3">
+                <span class="categories">Running Shoes</span>
+                <span class="categories">Bastketball Shoes</span>
+              </td>
+              <td class="total-items text-center"><span>All items: {{paginatedProducts.length}}</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="container-xxl mt-5">
+  <div class="row">
     <h2 class="mb-4">Products</h2>
     <span class="span-create" (click)="createProduct()">Add new item</span>
     <span class="span-create" (click)="createProduct()">Add new brand</span>
@@ -65,7 +133,7 @@
       </nav>
     </div>
   </div>
-</div>
+</div> -->
 
 <ng-template #toastTemplate> {{toastMessage}} </ng-template>
 

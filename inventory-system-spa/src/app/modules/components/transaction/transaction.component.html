@@ -1,13 +1,10 @@
 <div class="row">
-  <div class="row mt-5 mr-5 justify-content-center">
-    <h2 class="mb-4">Transact</h2>
-  </div>
   <div class="row transaction-wrapper">
     <div class="col-md-5">
       <form [formGroup]="transactionForm">
       <div class="table-wrap">
         <table class="table">
-          <thead class="thead-primary">
+          <thead class="thead-primary product-list">
             <tr>
               <th class="photo">&nbsp;</th>
               <th class="details">Select Items</th>
@@ -57,14 +54,14 @@
       <form [formGroup]="transactionForm">
       <div class="table-wrap">
         <table class="table">
-          <thead class="thead-primary">
+          <thead class="thead-primary in-cart">
             <tr>
-              <th>&nbsp;</th>
-              <th>In cart</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-              <th>&nbsp;</th>
+              <th class="photo">&nbsp;</th>
+              <th class="cart">In cart</th>
+              <th class="price">Price</th>
+              <th class="quantity">Quantity</th>
+              <th class="total">Total</th>
+              <th class="action">&nbsp;</th>
             </tr>
           </thead>
          

@@ -6,7 +6,7 @@
   color: #39739d;
   cursor: pointer;
   display: inline-block;
-  font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+  font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
   font-size: 13px;
   font-weight: 400;
   line-height: .5;
@@ -21,6 +21,7 @@
   touch-action: manipulation;
   vertical-align: baseline;
   white-space: nowrap;
+  margin-right: 10px;
 }
 
 .btn-edit:hover,
@@ -40,74 +41,85 @@
 }
 
 .btn-delete {
-    background-color: #ebb3b3;
-    border-radius: 3px;
-    border: 1px solid #bd7d7d;
-    box-sizing: border-box;
-    color: #8d2727;
-    cursor: pointer;
-    display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: .5;
-    margin: 0;
-    outline: none;
-    padding: 8px .8em;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: baseline;
-    white-space: nowrap;
-  }
-  
-  .btn-delete:hover,
-  .btn-delete:focus {
-    background-color: #ad6060;
-    color: #fff;
-  }
-  
-  .btn-delete:focus {
-    box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
-  }
-  
-  .btn-delete:active {
-    background-color: #a0c7e4;
-    box-shadow: none;
-    color: #2c5777;
-  }
-
-  table td.td-action{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    flex-wrap: nowrap;
-  }
-
-  @media (max-width: 720px) { /* Adjust the breakpoint as needed */
-    .td-action {
-      flex-direction: column; /* Stack buttons vertically */
-      gap: 5px; /* Space between buttons when stacked */
-    }
-
-    .td-action,
-    .th-action {
-        width: 100px;
-    }
+  background-color: #ebb3b3;
+  border-radius: 3px;
+  border: 1px solid #bd7d7d;
+  box-sizing: border-box;
+  color: #8d2727;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: .5;
+  margin: 0;
+  outline: none;
+  padding: 8px .8em;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
 }
 
-.span-create {
+.btn-delete:hover,
+.btn-delete:focus {
+  background-color: #ad6060;
+  color: #fff;
+}
+
+.btn-delete:focus {
+  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+}
+
+.btn-delete:active {
+  background-color: #a0c7e4;
+  box-shadow: none;
+  color: #2c5777;
+}
+
+
+@media (max-width: 720px) {
+  .td-action {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .td-action,
+  .th-action {
+    width: 100px;
+  }
+}
+
+.create-wrapper {
+  margin-left: 3px;
+  margin-bottom: 15px;
+
+  .span-create {
     padding-bottom: 10px;
     cursor: pointer;
     color: #39739d;
     width: auto;
+    border-radius: 10px;
+    border: 1px solid #99b19c;
+    font-size: 14px;
+    padding: 3px 7px 3px 7px;
+    margin-right: 7px;
+
+    &:hover {
+      background-color: #99b19c;
+      color: white;
+    }
+  }
 }
 
+
+
 .span-create:hover {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 ul.pagination {
@@ -149,6 +161,163 @@ ul.pagination {
   border-color: #dc3545;
 }
 
-.btn-secondary:hover, .btn-danger:hover {
+.btn-secondary:hover,
+.btn-danger:hover {
   opacity: 0.8;
+}
+
+/* Table Styles */
+.table-wrap {
+  overflow-x: auto;
+
+  table {
+    min-width: 1000px !important;
+    width: 100%;
+    max-height: 400px !important;
+    overflow-y: auto;
+
+    thead.product-list {
+      th {
+        color: #fff;
+        padding: 17px;
+        text-align: left;
+        font-weight: 400;
+        background-color: #99b19c;
+        font-size: 14px;
+      }
+
+      tr {
+        th.code {
+          width: 7%;
+        }
+
+        th.product {
+          width: 30%;
+        }
+
+        th.brand {
+          width: 8%;
+        }
+
+        th.category {
+          width: 8%;
+        }
+
+        th.action {
+          width: 10%;
+        }
+      }
+    }
+  }
+}
+
+tr {
+  td {
+    border: none;
+    padding: 15px;
+    font-size: 14px;
+    background: #fff;
+    border-bottom: 4px solid #f8f9fd;
+    vertical-align: middle;
+  }
+
+  td.code {
+    width: 7%;
+    vertical-align: middle;
+  }
+
+  td.product {
+    width: 30%;
+  }
+
+  td.brand {
+    width: 8%;
+  }
+
+  td.category {
+    width: 8%;
+  }
+
+  td.action {
+    width: 10%;
+    vertical-align: middle;
+  }
+}
+
+tfoot {
+  tr {
+    td {
+      .total-items {
+        font-size: 14px;
+        font-weight: 900;
+        vertical-align: middle;
+      }
+    }
+
+
+  }
+}
+
+.item {
+  .title {
+    font-size: 16px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
+}
+
+.btn-place-order {
+  background-color: #E97451;
+  color: white;
+  /* Text color */
+  border: 0;
+  padding: 10px 20px;
+  font-size: 12px;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-place-order:hover {
+  background-color: #FFBF00;
+}
+
+.categories {
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid #99b19c;
+  font-size: 12px;
+  padding: 3px 7px 3px 7px;
+  margin-right: 5px;
+
+  &:hover {
+    background-color: #99b19c;
+    color: white;
+  }
+}
+
+.scrollable-tbody {
+  display: block;
+  max-height: 900px;
+  overflow-y: auto;
+  width: 100%;
+  height: 800px;
+}
+
+.scrollable-tbody tr {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table thead,
+.table tfoot {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.footer-title {
+  width: 161px;
 }
