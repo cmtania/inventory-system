@@ -16,6 +16,26 @@ export class CategoryService {
 
     private readonly baseUrl = `${AppConfig.settings.webApiUrl}Category`;
 
+    addCategory(category: any) {
+      return this._webApi.httpPost(`${this.baseUrl}/save`, category).pipe(
+        concatMap((respObj: any) => {
+          console.log('respObj', respObj);
+          if (!respObj.IsOk) {
+            throw new ResponseObject(false, [], ['error']);
+          }
+  
+          return of(new ResponseObject(true, respObj.Results, []));
+        }),
+        catchError((respError: any) => {
+          if (respError instanceof ResponseObject) {
+            return of(new ResponseObject(false, [], ['Error']));
+          }
+  
+          return of(new ResponseObject(false, [], ['Error']));
+        })
+      );
+    }
+
     getCategories() {
         return this._webApi.httpGet(`${this.baseUrl}/list`).pipe(
           concatMap((respObj: any) => {

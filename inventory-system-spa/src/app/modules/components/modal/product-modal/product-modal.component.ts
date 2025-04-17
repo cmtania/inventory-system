@@ -62,10 +62,9 @@ export class ProductModalComponent implements OnInit, OnDestroy {
       this.getProductById(this.productId);
     }
 
-    this.subsink.add(
-      this.getBrands(),
-      this.getCategories()
-    );
+    this.getCategories();
+    this.getBrands();
+
   }
 
   onSubmit() {
@@ -186,23 +185,25 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   }
 
   private getBrands() {
-    return this._brandService.getBrands().subscribe(
-      (response) => {
-        if (response.IsOk) {
-          this.brandList = response.Results[0];
-        } 
-      },
-    );
+    this._brandService.getBrands().pipe(
+      take(1),
+      tap((resp: ResponseObject) => {
+        if (resp && resp.IsOk) {
+          this.brandList = resp.Results[0];
+        }
+      }
+    )).subscribe();
   }
 
   private getCategories() {
-    return this._categoryService.getCategories().subscribe(
-      (response) => {
-        if (response.IsOk) {
-          this.categoryList = response.Results[0];
-        } 
-      },
-    );
+    this._categoryService.getCategories().pipe(
+      take(1),
+      tap((resp: ResponseObject) => {
+        if (resp && resp.IsOk) {
+          this.categoryList = resp.Results[0];
+        }
+      }),
+    ).subscribe();
   }
 
   ngOnDestroy(){

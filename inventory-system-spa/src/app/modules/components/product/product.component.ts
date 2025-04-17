@@ -11,7 +11,11 @@ import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner
 import { ToastService } from '../../shared/toast/toast.service';
 import { isUndefined } from '@ngxs/store/operators/utils';
 import { ResponseObject } from '../../model/response.object';
-import { COMMON, PRODUCT } from '../../model/constants.model';
+import { COMMON, PRODUCT, BRAND, CATEGORY } from '../../model/constants.model';
+import { BrandModalComponent } from '../modal/brand-modal/brand-modal.component';
+import { CategoryModalComponent } from '../modal/category-modal/category-modal.component';
+import { CategoryService } from '../../services/category.service';
+import { CategoryModel } from '../../model/category.model';
 
 @Component({
   selector: 'app-product',
@@ -25,6 +29,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   @ViewChild('deleteConfirmation') deleteConfirmation!: TemplateRef<any>;
 
   constructor(private readonly _productService: ProductService,
+              private readonly _categoryService: CategoryService,
               private readonly _action$: Actions,
               private readonly _store: Store,
               private readonly _toastService: ToastService,
@@ -33,6 +38,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   subsink = new SubSink();
   productList = new Array<ProductModel>();
+  categoryList = new Array<CategoryModel>();
   filteredProducts = new Array<ProductModel>();
   paginatedProducts = new Array<ProductModel>();
   modalTitle: string = "";
@@ -53,6 +59,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     );
 
     this.getProducts();
+    this.getCategories();
   }
 
   listenToSaveProduct(){
@@ -167,6 +174,43 @@ export class ProductComponent implements OnInit, OnDestroy {
               this._store.dispatch(new HideSpinner());
           })
         ).subscribe();
+  }
+
+  createBrand(){
+    const initialState: ModalOptions = {
+      initialState: {
+        title: BRAND.CreateModalTitle,
+      },
+      backdrop: 'static',
+      keyboard: false
+    };
+    this.bsModalRef = this._modalService.show(BrandModalComponent, initialState);
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
+  }
+
+  createCategory(){
+    const initialState: ModalOptions = {
+      initialState: {
+        title: CATEGORY.CreateModalTitle,
+      },
+      backdrop: 'static',
+      keyboard: false
+    };
+    this.bsModalRef = this._modalService.show(CategoryModalComponent, initialState);
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
+  }
+
+  private getCategories() {
+    this._categoryService.getCategories().pipe(
+      take(1),
+      tap((resp: ResponseObject) => {
+        if (resp && resp.IsOk) {
+          this.categoryList = resp.Results[0];
+        }
+      }),
+    ).subscribe();
   }
 
   ngOnDestroy(){

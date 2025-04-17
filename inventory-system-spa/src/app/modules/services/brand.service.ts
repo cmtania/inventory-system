@@ -4,6 +4,7 @@ import { catchError, concatMap, map, of } from "rxjs";
 import { ResponseObject } from "../model/response.object";
 import { ProductModel } from "../model/product.model";
 import { AppConfig } from "../../core/app-config-service";
+import { BrandModel } from "../model/brand.model";
 
 
 
@@ -34,6 +35,26 @@ export class BrandService {
             return of(new ResponseObject(false, [], ['Error']));
           })
         );
+    }
+
+    addBrand(brand: any) {
+      return this._webApi.httpPost(`${this.baseUrl}/save`, brand).pipe(
+        concatMap((respObj: any) => {
+          console.log('respObj', respObj);
+          if (!respObj.IsOk) {
+            throw new ResponseObject(false, [], ['error']);
+          }
+  
+          return of(new ResponseObject(true, respObj.Results, []));
+        }),
+        catchError((respError: any) => {
+          if (respError instanceof ResponseObject) {
+            return of(new ResponseObject(false, [], ['Error']));
+          }
+  
+          return of(new ResponseObject(false, [], ['Error']));
+        })
+      );
     }
 }
 

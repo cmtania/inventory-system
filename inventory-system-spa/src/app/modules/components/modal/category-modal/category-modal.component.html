@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <span class="modal-title">{{ title }}</span>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form [formGroup]="categoryForm">
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="BrandCode">Code</label>
+            @if (formUtils.isInvalid(categoryForm, 'CategoryCode')){
+              <span class="span-info">Must be more than 5 characters</span>
+            }
+          </div>
+          <input type="text" class="form-control form-control-sm" id="CategoryCode" formControlName="CategoryCode"  [class.is-invalid]="formUtils.isInvalid(categoryForm, 'CategoryCode')">
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="Label">Name</label>
+            @if (formUtils.isInvalid(categoryForm, 'Label')){
+              <span class="span-info">Must be more than 5 characters</span>
+            }
+          </div>
+          <input type="text" class="form-control form-control-sm" id="Label" formControlName="Label"  [class.is-invalid]="formUtils.isInvalid(categoryForm, 'Label')">
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="Description">Description</label>
+          </div>
+          <textarea class="form-control form-control-sm" id="Description" formControlName="Description" ></textarea>  
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-custom-close" (click)="bsModalRef.hide()">{{ closeBtnName }}</button>
+    <button type="button" class="btn btn-save" (click)="saveCategory()" [disabled]="!categoryForm.valid">{{ saveBtnName }}</button>
+  </div>
+
+  <ng-template #toastTemplate> {{toastMessage}} </ng-template>

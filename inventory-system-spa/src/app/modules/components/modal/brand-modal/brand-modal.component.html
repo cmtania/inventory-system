@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <span class="modal-title">{{ title }}</span>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form [formGroup]="brandForm">
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="BrandCode">Code</label>
+            @if (formUtils.isInvalid(brandForm, 'BrandCode')){
+              <span class="span-info">Must be more than 5 characters</span>
+            }
+          </div>
+          <input type="text" class="form-control form-control-sm" id="BrandCode" formControlName="BrandCode"  [class.is-invalid]="formUtils.isInvalid(brandForm, 'BrandCode')">
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="Label">Name</label>
+            @if (formUtils.isInvalid(brandForm, 'Label')){
+              <span class="span-info">Must be more than 5 characters</span>
+            }
+          </div>
+          <input type="text" class="form-control form-control-sm" id="Label" formControlName="Label"  [class.is-invalid]="formUtils.isInvalid(brandForm, 'Label')">
+        </div>
+        <div class="form-group div-form-group">
+          <div class="label-container">
+            <label for="Description">Description</label>
+          </div>
+          <textarea class="form-control form-control-sm" id="Description" formControlName="Description" ></textarea>  
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-custom-close" (click)="bsModalRef.hide()">{{ closeBtnName }}</button>
+    <button type="button" class="btn btn-save" (click)="saveBrand()" [disabled]="!brandForm.valid">{{ saveBtnName }}</button>
+  </div>
+
+  <ng-template #toastTemplate> {{toastMessage}} </ng-template>
