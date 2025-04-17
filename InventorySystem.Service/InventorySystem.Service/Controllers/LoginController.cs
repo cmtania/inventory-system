@@ -15,7 +15,7 @@ namespace InventorySystem.Service.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(LoginRequest request)
+        public async Task<IActionResult> PostAsync(LoginRequestDto request)
         {
             var apiResponse = await _loginService.LoginAsync(request);
 

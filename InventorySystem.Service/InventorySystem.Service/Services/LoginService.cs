@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using LoginRequest = InventorySystem.Service.Models.LoginRequest;
+using LoginRequestDto = InventorySystem.Service.Models.LoginRequestDto;
 
 namespace InventorySystem.Service.Services
 {
@@ -19,7 +19,7 @@ namespace InventorySystem.Service.Services
         }
 
 
-        public async Task<ApiResponse> LoginAsync(LoginRequest loginRequest)
+        public async Task<ApiResponse> LoginAsync(LoginRequestDto loginRequest)
         {
             var apiResponse = new ApiResponse
             {

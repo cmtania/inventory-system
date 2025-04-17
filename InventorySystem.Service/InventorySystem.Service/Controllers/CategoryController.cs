@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Service.Interfaces;
+using InventorySystem.Service.Models.RequestModel;
 using InventorySystem.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,16 @@ namespace InventorySystem.Service.Controllers
 
             return Ok(category);
         }
+
+        [Route("save")]
+        [HttpPost]
+        public async Task<IActionResult> SaveCategory([FromBody] SaveCategoryRequestDto request)
+        {
+            var result = await _categoryService.SaveCategoryAsync(request);
+
+            return Ok(result);
+        }
+
 
     }
 }

@@ -1,5 +1,10 @@
 ﻿namespace InventorySystem.Service.Constants
 {
+
+    public class CommonConstants
+    {
+        public static string TRAN_RecordMissing = "Data not found in records.";
+    }
     public class ProductConstants
     {
         
@@ -8,7 +13,6 @@
         public static string TRAN_UpdateProduct = "Update Product";
         public static string TRAN_DeleteProduct = "Delete Product";
         public static string TRAN_SaveSuccessMessage = "Product saved successfully.";
-        public static string TRAN_ProductIsMissing = "Product is missing.";
 
     }
 
@@ -21,7 +25,14 @@
         public static string TRAN_UpdateInv = "Update Inventory";
         public static string TRAN_DeleteInv = "Delete Inventory";
         public static string TRAN_SaveSuccessMessage = "Inventory saved successfully.";
-        public static string TRAN_InvIsMissing = "Inventory is missing.";
+
+    }
+
+    public class BrandConstants
+    {
+        public static string TRAN_SaveBrand = "Saving Brand.";
+        public static string TRAN_UpdateBrand = "Updating Brand.";
+        public static string TRAN_DeleteBrand = "Deleting Brand.";
 
     }
 }

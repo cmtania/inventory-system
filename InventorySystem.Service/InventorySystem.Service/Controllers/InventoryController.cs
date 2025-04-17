@@ -38,7 +38,7 @@ namespace InventorySystem.Service.Controllers
 
         [Route("save")]
         [HttpPost]
-        public async Task<IActionResult> SaveInventoryAsync([FromBody] SaveInventoryRequest inventory)
+        public async Task<IActionResult> SaveInventoryAsync([FromBody] SaveInventoryRequestDto inventory)
         {
             if (inventory == null){
                 return BadRequest("Paremeters is not valid.");
@@ -51,7 +51,7 @@ namespace InventorySystem.Service.Controllers
 
         [Route("update")]
         [HttpPost]
-        public async Task<IActionResult> UpdateInventoryAsync([FromBody] SaveInventoryRequest inventory)
+        public async Task<IActionResult> UpdateInventoryAsync([FromBody] SaveInventoryRequestDto inventory)
         {
             if (inventory == null)
             {

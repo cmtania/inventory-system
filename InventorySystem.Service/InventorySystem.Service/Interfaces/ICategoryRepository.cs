@@ -6,5 +6,6 @@ namespace InventorySystem.Service.Interfaces
     {
         Task<List<BasCategory>> GetCategories();
         Task<BasCategory> GetCategoryById(int categoryId);
+        Task SaveCategory(BasCategory category);
     }
 }

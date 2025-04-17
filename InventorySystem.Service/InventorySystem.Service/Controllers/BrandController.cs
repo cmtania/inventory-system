@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Service.Interfaces;
+using InventorySystem.Service.Models.RequestModel;
 using InventorySystem.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,13 +24,22 @@ namespace InventorySystem.Service.Controllers
             return Ok(brands);
         }
 
-        [Route("{brandId}")]
+        [Route("get/{brandId}")]
         [HttpGet]
         public async Task<IActionResult> GetBrandByIdAsync(int brandId)
         {
             var brand = await _brandService.GetBrandByIdAsync(brandId);
 
             return Ok(brand);
+        }
+
+        [Route("save")]
+        [HttpPost]
+        public async Task<IActionResult> SaveBrand([FromBody] SaveBrandRequestDto request)
+        {
+            var result = await _brandService.SaveBrandAsync(request);
+
+            return Ok(result);
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿namespace InventorySystem.Service.Models.RequestModel
 {
-    public class ProductRequest
+    public class ProductRequestDto
     {
         public int ProductId { get; set; }
         public string ProductCode { get; set; }

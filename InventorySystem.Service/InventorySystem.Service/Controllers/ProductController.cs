@@ -43,7 +43,7 @@ namespace InventorySystem.Service.Controllers
 
         [Route("update")]
         [HttpPost]
-        public async Task<IActionResult> UpdateProductAsync([FromBody] ProductRequest product)
+        public async Task<IActionResult> UpdateProductAsync([FromBody] ProductRequestDto product)
         {
             var updateResponse = await _productService.UpdateProductAsync(product);
 

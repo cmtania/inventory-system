@@ -12,16 +12,43 @@ namespace InventorySystem.Service.Repository
             _dbContext = dbContext;
         }
 
-        public Task<List<BasBrand>> GetBrands()
+        public async Task SaveBrand(BasBrand brand) {
+            brand.CrtDt = DateTime.Now;
+            brand.CrtBy = "User";
+            brand.UpdtDt = DateTime.Now;
+            brand.UpdtBy = "User";
+            brand.Purge = false;
+            await _dbContext.AddAsync(brand);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateBrand(BasBrand brand)
         {
-            var dbResult = _dbContext.BasBrands.ToListAsync();
+            _dbContext.Update(brand);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteBrand(BasBrand brand)
+        {
+            brand.Purge = true;
+            brand.UpdtDt = DateTime.Now;
+            brand.UpdtBy = "User";
+            _dbContext.Update(brand);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<BasBrand>> GetBrands()
+        {
+            var dbResult = await _dbContext.BasBrands.ToListAsync();
 
             return dbResult;
         }
 
-        public Task<BasBrand> GetBrandById(int brandId)
+        public async Task<BasBrand> GetBrandById(int brandId)
         {
-            var dbResult = _dbContext.BasBrands.Where(x => x.BrndId == brandId).FirstOrDefaultAsync();
+            var dbResult = await _dbContext.BasBrands.Where(x => x.BrndId == brandId).FirstOrDefaultAsync();
 
             return dbResult;
         }

@@ -122,7 +122,7 @@ namespace InventorySystem.Service.Services
                  };
             }
         }
-        public async Task<ApiResponse> UpdateProductAsync(ProductRequest product)
+        public async Task<ApiResponse> UpdateProductAsync(ProductRequestDto product)
         {
             var apiResponse = new ApiResponse { IsOk = true };
             try
@@ -131,7 +131,7 @@ namespace InventorySystem.Service.Services
                 if (productToUpdate == null)
                 {
                     apiResponse.IsOk = false;
-                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ProductConstants.TRAN_ProductIsMissing };
+                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = CommonConstants.TRAN_RecordMissing };
                     apiResponse.Messages = [errorMessage];
 
                     return apiResponse;
@@ -167,7 +167,7 @@ namespace InventorySystem.Service.Services
                 if (productToPurge == null)
                 {
                     apiResponse.IsOk = false;
-                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = ProductConstants.TRAN_ProductIsMissing };
+                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_DeleteProduct, Message = CommonConstants.TRAN_RecordMissing };
                     apiResponse.Messages = [errorMessage];
 
                     return apiResponse;

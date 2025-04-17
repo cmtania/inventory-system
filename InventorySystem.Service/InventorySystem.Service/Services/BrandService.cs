@@ -1,5 +1,9 @@
-﻿using InventorySystem.Service.Interfaces;
+﻿using InventorySystem.Service.Constants;
+using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Models;
+using InventorySystem.Service.Models.DatabaseModel;
+using InventorySystem.Service.Models.RequestModel;
+using InventorySystem.Service.Repository;
 using InventorySystem.Service.ViewModels;
 
 namespace InventorySystem.Service.Services
@@ -10,6 +14,67 @@ namespace InventorySystem.Service.Services
         public BrandService(IBrandRepository brandRepository)
         {
             _brandRepository = brandRepository;
+        }
+
+        public async Task<ApiResponse> SaveBrandAsync(SaveBrandRequestDto request)
+        {
+            var apiResponse = new ApiResponse { IsOk = true };
+            try
+            {
+                var brand = new BasBrand
+                {
+                    BrndCd = request.BrandCode,
+                    Label = request.Label,
+                    Rmrks = request.Description
+                };
+                
+                await _brandRepository.SaveBrand(brand);
+
+                var brandsVm = new List<BrandViewModel>();
+
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsOk = false;
+                apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
+                return apiResponse;
+            }
+        }
+
+        public async Task<ApiResponse> UpdateBrandAsync(UpdateBrandRequestDto request)
+        {
+            var apiResponse = new ApiResponse { IsOk = true };
+            try
+            {
+                var brandToUpdate = await _brandRepository.GetBrandById(request.BrandId);
+                if (brandToUpdate == null)
+                {
+                    apiResponse.IsOk = false;
+                    var errorMessage = new ResponseMessage { Title = BrandConstants.TRAN_SaveBrand, Message = CommonConstants.TRAN_RecordMissing };
+                    apiResponse.Messages = [errorMessage];
+
+                    return apiResponse;
+                }
+
+                brandToUpdate.BrndCd = request.BrandCode;
+                brandToUpdate.Label = request.Label;
+                brandToUpdate.Rmrks = request.Remarks;
+                brandToUpdate.UpdtDt = DateTime.Now;
+                brandToUpdate.UpdtBy = "User";
+
+                await _brandRepository.UpdateBrand(brandToUpdate);
+
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsOk = false;
+                var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.InnerException.Message };
+                apiResponse.Messages = [errorMessage];
+
+                return apiResponse;
+            }
         }
 
         public async Task<ApiResponse> GetBrandsAsync()

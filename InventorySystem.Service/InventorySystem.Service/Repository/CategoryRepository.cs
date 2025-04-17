@@ -12,6 +12,18 @@ namespace InventorySystem.Service.Repository
             _dbContext = dbContext;
         }
 
+        public async Task SaveCategory(BasCategory category)
+        {
+            category.CrtDt = DateTime.Now;
+            category.CrtBy = "User";
+            category.UpdtDt = DateTime.Now;
+            category.UpdtBy = "User";
+            category.Purge = false;
+            await _dbContext.AddAsync(category);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
         public Task<List<BasCategory>> GetCategories()
         {
             var dbResult = _dbContext.BasCategories.ToListAsync();

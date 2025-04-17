@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Service.Models;
+using InventorySystem.Service.Models.RequestModel;
 
 namespace InventorySystem.Service.Interfaces
 {
@@ -6,5 +7,6 @@ namespace InventorySystem.Service.Interfaces
     {
         Task<ApiResponse> GetBrandsAsync();
         Task<ApiResponse> GetBrandByIdAsync(int brandId);
+        Task<ApiResponse> SaveBrandAsync(SaveBrandRequestDto request);
     }
 }

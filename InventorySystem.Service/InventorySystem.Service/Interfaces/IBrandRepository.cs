@@ -6,5 +6,8 @@ namespace InventorySystem.Service.Interfaces
     {
         Task<List<BasBrand>> GetBrands();
         Task<BasBrand> GetBrandById(int brandId);
+        Task SaveBrand(BasBrand brand);
+        Task UpdateBrand(BasBrand brand);
+        Task DeleteBrand(BasBrand brand);
     }
 }

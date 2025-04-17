@@ -1,5 +1,8 @@
 ﻿using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Models;
+using InventorySystem.Service.Models.DatabaseModel;
+using InventorySystem.Service.Models.RequestModel;
+using InventorySystem.Service.Repository;
 using InventorySystem.Service.ViewModels;
 
 namespace InventorySystem.Service.Services
@@ -10,6 +13,30 @@ namespace InventorySystem.Service.Services
         public CategoryService(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
+        }
+
+        public async Task<ApiResponse> SaveCategoryAsync(SaveCategoryRequestDto request)
+        {
+            var apiResponse = new ApiResponse { IsOk = true };
+            try
+            {
+                var brand = new BasCategory
+                {
+                    CtgryCd = request.CategoryCode,
+                    Label = request.Label,
+                    Rmrks = request.Description
+                };
+
+                await _categoryRepository.SaveCategory(brand);
+
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsOk = false;
+                apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
+                return apiResponse;
+            }
         }
 
         public async Task<ApiResponse> GetCategoriesAsync()

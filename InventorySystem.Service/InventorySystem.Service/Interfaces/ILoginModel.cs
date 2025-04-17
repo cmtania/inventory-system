@@ -4,6 +4,6 @@ namespace InventorySystem.Service.Interfaces
 {
     public interface ILoginModel
     {
-        Task<ApiResponse> LoginAsync(LoginRequest request);
+        Task<ApiResponse> LoginAsync(LoginRequestDto request);
     }
 }

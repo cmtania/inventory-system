@@ -82,7 +82,7 @@ namespace InventorySystem.Service.Services
                 };
             }
         }
-        public async Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequest inventory)
+        public async Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequestDto inventory)
         {
             var apiResponse = new ApiResponse { IsOk = true };
             try
@@ -109,7 +109,7 @@ namespace InventorySystem.Service.Services
                 return apiResponse;
             }
         }
-        public async Task<ApiResponse> UpdateInventoryAsync(SaveInventoryRequest invRequest)
+        public async Task<ApiResponse> UpdateInventoryAsync(SaveInventoryRequestDto invRequest)
         {
             var apiResponse = new ApiResponse { IsOk = true };
             try
@@ -118,7 +118,7 @@ namespace InventorySystem.Service.Services
                 if (inventory == null)
                 {
                     apiResponse.IsOk = false;
-                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ProductConstants.TRAN_ProductIsMissing };
+                    var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = CommonConstants.TRAN_RecordMissing };
                     apiResponse.Messages = [errorMessage];
 
                     return apiResponse;
@@ -155,7 +155,7 @@ namespace InventorySystem.Service.Services
                         IsOk = true,
                         Messages = [ new ResponseMessage
                                { Title = InventoryConstants.TRAN_DeleteInv,
-                                  Message = ProductConstants.TRAN_ProductIsMissing
+                                  Message = CommonConstants.TRAN_RecordMissing
                                }]
                     };
                 }
