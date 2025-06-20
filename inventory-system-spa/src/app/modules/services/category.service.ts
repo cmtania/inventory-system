@@ -5,8 +5,6 @@ import { ResponseObject } from "../model/response.object";
 import { ProductModel } from "../model/product.model";
 import { AppConfig } from "../../core/app-config-service";
 
-
-
 @Injectable({
   providedIn: 'root',
 })

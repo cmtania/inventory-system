@@ -1,3 +1,9 @@
+h2.title {
+  font-weight: 600;
+  color: #87af8d;
+  margin-bottom: 10px;
+}
+
 .container-fluid {
     padding: 20px;
   }
@@ -27,13 +33,13 @@
 
   .card-total {
     font-size: 4rem;
-    color: #008000;
+    color: #87af8d;
   }
 
   .card-total.low-stock{
-    color: #FF0000;
+    color: #e9a4a4;
   }
 
   .card-title {
-    color:#0F4D0F;
+    color:#87af8d;
   }

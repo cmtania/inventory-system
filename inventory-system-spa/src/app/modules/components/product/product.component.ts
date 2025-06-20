@@ -21,31 +21,31 @@ import { CategoryModel } from '../../model/category.model';
   selector: 'app-product',
   standalone: false,
   templateUrl: './product.component.html',
-  styleUrl: './product.component.scss'
+  styleUrl: './product.component.scss',
 })
 export class ProductComponent implements OnInit, OnDestroy {
-
   @ViewChild('toastTemplate') toastTemplate!: TemplateRef<any>;
   @ViewChild('deleteConfirmation') deleteConfirmation!: TemplateRef<any>;
 
-  constructor(private readonly _productService: ProductService,
-              private readonly _categoryService: CategoryService,
-              private readonly _action$: Actions,
-              private readonly _store: Store,
-              private readonly _toastService: ToastService,
-              private _modalService: BsModalService){
-  }
+  constructor(
+    private readonly _productService: ProductService,
+    private readonly _categoryService: CategoryService,
+    private readonly _action$: Actions,
+    private readonly _store: Store,
+    private readonly _toastService: ToastService,
+    private _modalService: BsModalService
+  ) {}
 
   subsink = new SubSink();
   productList = new Array<ProductModel>();
   categoryList = new Array<CategoryModel>();
   filteredProducts = new Array<ProductModel>();
   paginatedProducts = new Array<ProductModel>();
-  modalTitle: string = "";
+  modalTitle: string = '';
   bsModalRef?: BsModalRef;
 
-  toastMessage: string = "";
-  searchTerm: string = "";
+  toastMessage: string = '';
+  searchTerm: string = '';
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 0;
@@ -53,56 +53,65 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   productIdToDelete: number = 0;
 
-  ngOnInit(){
-    this.subsink.add(
-      this.listenToSaveProduct()
-    );
+  ngOnInit() {
+    this.subsink.add(this.listenToSaveProduct());
 
     this.getProducts();
     this.getCategories();
   }
 
-  listenToSaveProduct(){
-    return this._action$.pipe(ofActionSuccessful(TriggerSaveProduct))
-      .subscribe(()=> {
+  listenToSaveProduct() {
+    return this._action$
+      .pipe(ofActionSuccessful(TriggerSaveProduct))
+      .subscribe(() => {
         this.getProducts();
       });
   }
 
   getProducts() {
-   this._store.dispatch(new ShowSpinner());
-   this._productService.getProducts().pipe(
-    take(1),
-    tap((resp: any) => {
-      console.log("resp", resp);
-      if (resp.IsOk) {
-        this.productList = resp.Results[0];
-        this.filterProducts();
-        return;
-      }
+    this._store.dispatch(new ShowSpinner());
+    this._productService
+      .getProducts()
+      .pipe(
+        take(1),
+        finalize(() => {
+          this._store.dispatch(new HideSpinner());
+        })
+      ).subscribe((resp: any) => {
+        console.log('resp', resp);
+        if (resp.IsOk) {
+          this.productList = resp.Results[0];
+          this.filterProducts();
 
-      this.toastMessage = "An error occurred while loading the products.";
-      this._toastService.show(this.toastTemplate,"ERROR");
+          return;
+        }
 
-    }),
-    finalize(() => {
-      this._store.dispatch(new HideSpinner());
-    })
-  ).subscribe();
-
+        this.toastMessage = 'An error occurred while loading the products.';
+        this._toastService.show(this.toastTemplate, 'ERROR');
+      });
   }
 
   filterProducts() {
-    this.filteredProducts = this.productList.filter(product =>
-      product.ProductName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      product.ProductCode.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      product.ProductDescription.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      product.Brand.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      product.Category.toLowerCase().includes(this.searchTerm.toLowerCase())
+    this.filteredProducts = this.productList.filter(
+      (product) =>
+        product.ProductName.toLowerCase().includes(
+          this.searchTerm.toLowerCase()
+        ) ||
+        product.ProductCode.toLowerCase().includes(
+          this.searchTerm.toLowerCase()
+        ) ||
+        product.ProductDescription.toLowerCase().includes(
+          this.searchTerm.toLowerCase()
+        ) ||
+        product.Brand.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        product.Category.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
 
     this.totalPages = Math.ceil(this.filteredProducts.length / this.pageSize);
-    this.totalPagesArray = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    this.totalPagesArray = Array.from(
+      { length: this.totalPages },
+      (_, i) => i + 1
+    );
     this.changePage(1);
   }
 
@@ -121,29 +130,35 @@ export class ProductComponent implements OnInit, OnDestroy {
       initialState: {
         title: PRODUCT.CreateModalTitle,
         productId: 0,
-        isUpdate: false
+        isUpdate: false,
       },
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     };
-    this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
+    this.bsModalRef = this._modalService.show(
+      ProductModalComponent,
+      initialState
+    );
     this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
     this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
   }
 
-  editProduct(productId: number){
-    console.log("product", productId);
+  editProduct(productId: number) {
+    console.log('product', productId);
     const initialState: ModalOptions = {
       initialState: {
         title: PRODUCT.EditModalTitle,
         productId: productId,
-        isUpdate: true
+        isUpdate: true,
       },
-      class: "modal-lg",
+      class: 'modal-lg',
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     };
-    this.bsModalRef = this._modalService.show(ProductModalComponent, initialState);
+    this.bsModalRef = this._modalService.show(
+      ProductModalComponent,
+      initialState
+    );
     this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonCancel;
     this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonUpdate;
   }
@@ -152,68 +167,83 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.productIdToDelete = productId;
     const initialState: ModalOptions = {
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     };
-    this.bsModalRef = this._modalService.show(this.deleteConfirmation, initialState);
+    this.bsModalRef = this._modalService.show(
+      this.deleteConfirmation,
+      initialState
+    );
   }
 
   deleteProduct() {
-    this._productService.deleteProduct(this.productIdToDelete)
-    .pipe(take(1),
-          tap((resp: ResponseObject) => {
-            if (resp && resp.IsOk) {
-              this.bsModalRef?.hide();
-              this._store.dispatch(new TriggerSaveProduct());
-              return;
-            }
+    this._productService
+      .deleteProduct(this.productIdToDelete)
+      .pipe(
+        take(1),
+        tap((resp: ResponseObject) => {
+          if (resp && resp.IsOk) {
+            this.bsModalRef?.hide();
+            this._store.dispatch(new TriggerSaveProduct());
+            return;
+          }
 
-            this.toastMessage = "An error occurred while deleting the product.";
-            this._toastService.show(this.toastTemplate,"ERROR");
-          }),
-          finalize(() => {
-              this._store.dispatch(new HideSpinner());
-          })
-        ).subscribe();
+          this.toastMessage = 'An error occurred while deleting the product.';
+          this._toastService.show(this.toastTemplate, 'ERROR');
+        }),
+        finalize(() => {
+          this._store.dispatch(new HideSpinner());
+        })
+      )
+      .subscribe();
   }
 
-  createBrand(){
+  createBrand() {
     const initialState: ModalOptions = {
       initialState: {
         title: BRAND.CreateModalTitle,
       },
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     };
-    this.bsModalRef = this._modalService.show(BrandModalComponent, initialState);
+    this.bsModalRef = this._modalService.show(
+      BrandModalComponent,
+      initialState
+    );
     this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
     this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
   }
 
-  createCategory(){
+  createCategory() {
     const initialState: ModalOptions = {
       initialState: {
         title: CATEGORY.CreateModalTitle,
       },
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     };
-    this.bsModalRef = this._modalService.show(CategoryModalComponent, initialState);
+    this.bsModalRef = this._modalService.show(
+      CategoryModalComponent,
+      initialState
+    );
     this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
     this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
   }
 
   private getCategories() {
-    this._categoryService.getCategories().pipe(
-      take(1),
-      tap((resp: ResponseObject) => {
-        if (resp && resp.IsOk) {
-          this.categoryList = resp.Results[0];
-        }
-      }),
-    ).subscribe();
+    this._categoryService
+      .getCategories()
+      .pipe(
+        take(1),
+        tap((resp: ResponseObject) => {
+          if (resp && resp.IsOk) {
+            this.categoryList = resp.Results[0];
+          }
+        })
+      )
+      .subscribe();
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subsink.unsubscribe();
   }
 }

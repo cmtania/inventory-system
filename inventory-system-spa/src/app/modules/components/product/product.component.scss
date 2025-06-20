@@ -7,7 +7,7 @@ h2.title {
 
 .btn-edit {
   background-color: #b9d9ee;
-  border-radius: 3px;
+  border-radius: 10px;
   border: 1px solid #7aa7c7;
   box-sizing: border-box;
   color: #39739d;
@@ -29,27 +29,32 @@ h2.title {
   vertical-align: baseline;
   white-space: nowrap;
   margin-right: 10px;
+
+  &:hover {
+    background-color: #6f9cbd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+    color: #fff;
+  }
+
+  &:focus {
+    background-color: #6f9cbd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    color: #fff;
+  }
+
+  &:active {
+    background-color: #a0c7e4;
+    box-shadow: none;
+    color: #2c5777;
+  }
 }
 
-.btn-edit:hover,
-.btn-edit:focus {
-  background-color: #6f9cbd;
-  color: #fff;
-}
-
-.btn-edit:focus {
-  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
-}
-
-.btn-edit:active {
-  background-color: #a0c7e4;
-  box-shadow: none;
-  color: #2c5777;
-}
 
 .btn-delete {
   background-color: #ebb3b3;
-  border-radius: 3px;
+  border-radius: 10px;
   border: 1px solid #bd7d7d;
   box-sizing: border-box;
   color: #8d2727;
@@ -70,24 +75,25 @@ h2.title {
   touch-action: manipulation;
   vertical-align: baseline;
   white-space: nowrap;
-}
 
-.btn-delete:hover,
-.btn-delete:focus {
-  background-color: #ad6060;
-  color: #fff;
-}
+  &:hover {
+    background-color: #ad6060;
+    color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+  }
 
-.btn-delete:focus {
-  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
-}
+  &:focus {
+    box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+  }
 
-.btn-delete:active {
-  background-color: #a0c7e4;
-  box-shadow: none;
-  color: #2c5777;
+  &:active {
+    background-color: #a0c7e4;
+    box-shadow: none;
+    color: #2c5777;
+  }
 }
-
 
 @media (max-width: 720px) {
   .td-action {
@@ -105,10 +111,11 @@ h2.title {
   margin-left: 3px;
   margin-bottom: 15px;
 
-  .span-create {
+  .action-button {
+    background-color: #87af8d;
     padding-bottom: 10px;
     cursor: pointer;
-    color: #87af8d;
+    color: #ffff;
     width: auto;
     border-radius: 10px;
     border: 1px solid #87af8d;
@@ -117,8 +124,9 @@ h2.title {
     margin-right: 7px;
 
     &:hover {
-      background-color: #87af8d;
-      color: white;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+      transition: all 0.3s ease;
     }
   }
 }

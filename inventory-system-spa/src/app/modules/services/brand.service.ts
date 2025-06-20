@@ -2,12 +2,7 @@ import { Injectable } from "@angular/core";
 import { WebApi } from "./webapi.service";
 import { catchError, concatMap, map, of } from "rxjs";
 import { ResponseObject } from "../model/response.object";
-import { ProductModel } from "../model/product.model";
 import { AppConfig } from "../../core/app-config-service";
-import { BrandModel } from "../model/brand.model";
-
-
-
 @Injectable({
   providedIn: 'root',
 })

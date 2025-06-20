@@ -20,6 +20,7 @@ import { InventoryModalComponent } from "../modal/inventory-modal/inventory-moda
 import { TransactionComponent } from "../transaction/transaction.component";
 import { BrandModalComponent } from "../modal/brand-modal/brand-modal.component";
 import { CategoryModalComponent } from "../modal/category-modal/category-modal.component";
+import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { CategoryModalComponent } from "../modal/category-modal/category-modal.c
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
-    ModalModule
+    ModalModule,
+    NgbDropdownModule
   ],  
   declarations: [
     LayoutComponent,

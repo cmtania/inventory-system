@@ -112,29 +112,26 @@ h2.title {
     margin-left: 3px;
     margin-bottom: 15px;
   
-    .span-create {
+    .action-button {
+      background-color: #87af8d;
       padding-bottom: 10px;
       cursor: pointer;
-      color: #39739d;
+      color: #ffff;
       width: auto;
       border-radius: 10px;
-      border: 1px solid #99b19c;
+      border: 1px solid #87af8d;
       font-size: 14px;
       padding: 3px 7px 3px 7px;
       margin-right: 7px;
   
       &:hover {
-        background-color: #99b19c;
-        color: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+        transition: all 0.3s ease;
       }
     }
   }
   
-  
-  
-  .span-create:hover {
-    font-weight: bold;
-  }
 
 /* Table Styles */
 .table-wrap {
