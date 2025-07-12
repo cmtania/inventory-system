@@ -74,33 +74,37 @@
             <div *ngFor="let cart of carts.controls; let index = index" 
                  [formGroupName]="index" 
                  class="cart-item">
-              <div class="item-image">
+              <!-- <div class="item-image">
                 <img src="assets/images/cart.png" alt="product" class="cart-item-img">
-              </div>
-              <div class="item-details">
-                <h4 class="item-name">{{cart.get('ProductName')?.value}}</h4>
-                <p class="item-description">{{cart.get('Description')?.value}}</p>
-                <div class="item-price">{{cart.get('UnitPrice')?.value | currency}} each</div>
-              </div>
-              <div class="item-controls">
-                <div class="quantity-control">
-                  <button type="button" class="qty-btn minus" (click)="decreaseQuantity(index)">
-                    <i class="fa-solid fa-minus"></i>
-                  </button>
-                  <input type="number" 
-                         formControlName="Quantity" 
-                         (change)="quantityChange(index)"
-                         class="qty-input" 
-                         min="1" 
-                         max="100">
-                  <button type="button" class="qty-btn plus" (click)="increaseQuantity(index)">
-                    <i class="fa-solid fa-plus"></i>
+              </div> -->
+              <div class="item-content">
+                <div class="item-header">
+                  <div class="item-details">
+                    <h4 class="item-name">{{cart.get('ProductName')?.value}}</h4>
+                    <p class="item-description">{{cart.get('Description')?.value}}</p>
+                    <div class="item-price">{{cart.get('UnitPrice')?.value | currency}} each</div>
+                  </div>
+                  <button type="button" class="remove-btn" (click)="deleteCartItem(index)">
+                    <i class="fa-solid fa-trash"></i>
                   </button>
                 </div>
-                <div class="item-total">{{cart.get('RowTotal')?.value | currency}}</div>
-                <button type="button" class="remove-btn" (click)="deleteCartItem(index)">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
+                <div class="item-footer">
+                  <div class="quantity-control">
+                    <button type="button" class="qty-btn minus" (click)="decreaseQuantity(index)">
+                      <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <input type="text" 
+                           formControlName="Quantity" 
+                           (change)="quantityChange(index)"
+                           class="qty-input" 
+                           min="1" 
+                           max="100">
+                    <button type="button" class="qty-btn plus" (click)="increaseQuantity(index)">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  </div>
+                  <div class="item-total">{{cart.get('RowTotal')?.value | currency}}</div>
+                </div>
               </div>
             </div>
           </div>
