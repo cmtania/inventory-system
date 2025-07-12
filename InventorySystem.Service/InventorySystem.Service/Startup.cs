@@ -99,6 +99,7 @@ namespace InventorySystem.Service
             builder.RegisterType<CategoryRepository>().As<ICategoryRepository>();
             builder.RegisterType<InventoryService>().As<IInventoryService>();
             builder.RegisterType<InventoryRepository>().As<IInventoryRepository>();
+            builder.RegisterType<RoleRepository>().As<IRoleRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

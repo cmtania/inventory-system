@@ -13,7 +13,9 @@ namespace InventorySystem.Service.Repository
 
         public Task<TrnUser> GetUser(string username, string password)
         {
-            var dbResult = _dbContext.TrnUsers.Where(x => (x.UsrNm == username || x.Email == username) && x.Pswrd == password ).FirstOrDefaultAsync();
+            var dbResult = _dbContext.TrnUsers
+                .Where(x => (x.UsrNm == username || x.Email == username) && x.Pswrd == password)
+                .FirstOrDefaultAsync();
 
             return dbResult;
         }

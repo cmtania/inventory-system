@@ -53,6 +53,8 @@ export class LoginComponent {
           console.log('resp', resp);
           if (resp.IsOk && resp.Results[0]?.Token) {
             localStorage.setItem('auth_token', resp.Results[0].Token);
+            localStorage.setItem('full_name', resp.Results[0].FullName);
+            localStorage.setItem('role', resp.Results[0].Role);
             this.router.navigate(["/dashboard"]);
 
             return;

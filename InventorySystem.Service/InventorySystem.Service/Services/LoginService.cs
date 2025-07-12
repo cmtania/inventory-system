@@ -12,10 +12,12 @@ namespace InventorySystem.Service.Services
     {
         private readonly IConfiguration _config;
         private readonly IUserRepository _userRepository;
-        public LoginService(IConfiguration config, IUserRepository userRepository)
+        private readonly IRoleRepository _roleRepository;
+        public LoginService(IConfiguration config, IUserRepository userRepository, IRoleRepository roleRepository)
         {
             _config = config;
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
 
@@ -38,8 +40,16 @@ namespace InventorySystem.Service.Services
                     return apiResponse;
                 }
 
+                var role = await _roleRepository.GetRoleById(user.RlId);
+
                 string token = GenerateToken();
-                apiResponse.Results = [new { Token = token }];
+                apiResponse.Results = [new 
+                    { 
+                       Token = token,
+                       FullName = $"{user.FrstNm} {user.LstNm}",
+                       Role =  role.RlNm
+                    }
+                   ];
                 return apiResponse;
 
             }

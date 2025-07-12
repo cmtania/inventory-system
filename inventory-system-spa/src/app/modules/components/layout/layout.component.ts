@@ -8,6 +8,10 @@ import { Router } from '@angular/router';
 })
 export class LayoutComponent {
   isExpanded: boolean = false;
+
+  fullName = localStorage.getItem('full_name') || '';
+  role = localStorage.getItem('role') || '';
+
   constructor(
     private readonly _router: Router,
   ){}
