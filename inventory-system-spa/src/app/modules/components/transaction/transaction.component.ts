@@ -18,6 +18,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class TransactionComponent implements OnInit {
 
   transactionForm: FormGroup;
+  currentDate = new Date(); // Add current date property
   constructor(
     private fb: FormBuilder,
     private readonly _productService: ProductService,
@@ -94,6 +95,7 @@ export class TransactionComponent implements OnInit {
     const control = this.carts.at(index).get('Quantity');
     if (control && control.value > 1) {
       control.setValue(control.value - 1);
+      this.quantityChange(index);
     }
   }
 
@@ -101,6 +103,7 @@ export class TransactionComponent implements OnInit {
     const control = this.carts.at(index).get('Quantity');
     if (control) {
       control.setValue(control.value + 1);
+      this.quantityChange(index);
     }
   }
 
@@ -186,6 +189,29 @@ export class TransactionComponent implements OnInit {
     }, 0);
   
     this.details.get('Total')?.setValue(total);
+  }
+
+  // Add missing methods for product quantity control
+  decreaseProductQuantity(index: number): void {
+    const control = this.products.at(index).get('Quantity');
+    if (control && control.value > 1) {
+      control.setValue(control.value - 1);
+    }
+  }
+
+  increaseProductQuantity(index: number): void {
+    const control = this.products.at(index).get('Quantity');
+    if (control) {
+      control.setValue(control.value + 1);
+    }
+  }
+
+  // Add clear cart method
+  clearCart(): void {
+    while (this.carts.length !== 0) {
+      this.carts.removeAt(0);
+    }
+    this.calculateTotal();
   }
 
 }

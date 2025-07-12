@@ -62,7 +62,7 @@ namespace InventorySystem.Service
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder
-                        .WithOrigins("http://localhost:1995")
+                        .WithOrigins("http://localhost:4200")
                         .WithMethods("GET", "POST", "DELETE")
                         .AllowAnyHeader()
                         .AllowCredentials());
@@ -75,8 +75,8 @@ namespace InventorySystem.Service
             // services register here
             /*
               Lifetime   Instance Count                   Best Used For                      Example Use Cases
-              Transient  New instance per request.        Lightweight, stateless services.   Logging, simple utilities
               Scoped     One instance per HTTP request.   Request - level state management.  EF Core DbContext, business logic per request
+              Transient  New instance per request.        Lightweight, stateless services.   Logging, simple utilities
               Singleton  One instance for the entire app. Shared state, expensive objects.   Caching, configuration, logging
             */
 

@@ -1,53 +1,217 @@
 <div class="container-fluid mt-4">
-    <div class="row">
-        <h2 class="mb-4 title">Dashboard</h2>
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="title">Inventory Dashboard</h2>
+            <p class="text-muted">Real-time overview of your inventory system</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="d-flex align-items-center justify-content-end">
+                <span class="text-muted me-2">Last updated:</span>
+                <span class="badge bg-success">{{ lastUpdated | date:'medium' }}</span>
+            </div>
+        </div>
     </div>
-    <div class="row d-flex flex-wrap">
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <span class="font-weight-bold card-title">Product Sold</span>
-                    <p class="text-center"><span class="font-weight-bold card-total">300</span></p>
+
+    <!-- Key Metrics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-shopping-cart text-primary fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="card-title text-muted mb-1">Products Sold</h6>
+                        <h3 class="mb-0 fw-bold">300</h3>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up"></i> +12% from last month
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <span class="font-weight-bold card-title">Product Sales</span>
-                    <p class="text-center"><span class="font-weight-bold card-total">5,000</span></p>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-dollar-sign text-success fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="card-title text-muted mb-1">Total Sales</h6>
+                        <h3 class="mb-0 fw-bold">₱5,000</h3>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up"></i> +8% from last month
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <span class="font-weight-bold card-title">New Product</span>
-                    <p class="text-center"><span class="font-weight-bold card-total">10</span></p>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-boxes text-info fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="card-title text-muted mb-1">Active Products</h6>
+                        <h3 class="mb-0 fw-bold">690</h3>
+                        <small class="text-info">
+                            <i class="fas fa-plus"></i> 10 new this month
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <span class="font-weight-bold card-title">Active Products</span>
-                    <p class="text-center"><span class="font-weight-bold card-total">690</span></p>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="card-title text-muted mb-1">Low Stock Alert</h6>
+                        <h3 class="mb-0 fw-bold text-warning">35</h3>
+                        <small class="text-muted">Items below 10 units</small>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-            <div class="card shadow-sm">
+    </div>
+
+    <!-- Stock Status Section -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="card-title mb-0">Inventory Overview</h5>
+                </div>
                 <div class="card-body">
-                    <span class="font-weight-bold card-title">Low Stock Items (10 below)</span>
-                    <p class="text-center"><span class="font-weight-bold card-total low-stock">35</span></p>
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <h4 class="text-success mb-1">655</h4>
+                                <p class="text-muted mb-0">In Stock</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <h4 class="text-warning mb-1">35</h4>
+                                <p class="text-muted mb-0">Low Stock</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <h4 class="text-danger mb-1">50</h4>
+                                <p class="text-muted mb-0">Out of Stock</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: 88.5%"></div>
+                        <div class="progress-bar bg-warning" style="width: 4.7%"></div>
+                        <div class="progress-bar bg-danger" style="width: 6.8%"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-            <div class="card shadow-sm">
+        
+       <div class="col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="card-title mb-0">Daily Report</h5>
+                </div>
                 <div class="card-body">
-                    <span class="font-weight-bold card-title">Out of Stocks</span>
-                    <p class="text-center"><span class="font-weight-bold card-total">50</span></p>
+                    <div class="text-center">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h6 class="mb-3">View Today's Performance</h6>
+                        <a href="#" class="btn btn-primary">
+                            <i class="fas fa-file-alt me-2"></i>Generate Daily Report
+                        </a>
+                        <div class="mt-3">
+                            <small class="text-muted">Last report generated: July 15, 2025</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Top Products -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item d-flex mb-3">
+                            <div class="timeline-marker bg-success rounded-circle me-3"></div>
+                            <div class="timeline-content">
+                                <small class="text-muted">2 hours ago</small>
+                                <p class="mb-0">50 units of Product A restocked</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item d-flex mb-3">
+                            <div class="timeline-marker bg-warning rounded-circle me-3"></div>
+                            <div class="timeline-content">
+                                <small class="text-muted">4 hours ago</small>
+                                <p class="mb-0">Product B running low (8 units left)</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item d-flex">
+                            <div class="timeline-marker bg-info rounded-circle me-3"></div>
+                            <div class="timeline-content">
+                                <small class="text-muted">1 day ago</small>
+                                <p class="mb-0">New product "Product C" added</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">Top Selling Products</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <h6 class="mb-0">Product Alpha</h6>
+                                <small class="text-muted">SKU: PA001</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">120 sold</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <h6 class="mb-0">Product Beta</h6>
+                                <small class="text-muted">SKU: PB002</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">95 sold</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <h6 class="mb-0">Product Gamma</h6>
+                                <small class="text-muted">SKU: PG003</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">85 sold</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -17,7 +17,20 @@
             <div class="mb-3">
               <input type="password" class="form-control" id="password" formControlName="Password" placeholder="Password">
             </div>
-            <div class="text-center"><button type="submit" class="btn btn-color px-5 mb-5 w-100 fw-bold">Login</button></div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-login px-5 mb-2 w-100 fw-bold">Login</button>
+            </div>
+            <div class="mb-3 login-error" *ngIf="isLoginFailed">
+              <div class="error-icon-container">
+              <span class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+              </span>
+              </div>
+              <div class="error-content">
+                <span class="error-title">Login failed!</span><br />
+                <span class="error-text">Invalid username or password.</span>
+              </div>
+            </div>
             <div id="emailHelp" class="form-text text-center mb-5 text-dark">Not
               Registered? <a href="#" class="main-text-color fw-bold"> Create an
                 Account</a>

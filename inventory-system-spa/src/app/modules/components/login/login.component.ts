@@ -6,17 +6,21 @@ import { LoginService } from '../../services/login.service';
 import { finalize, take, tap } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner.action';
+import { LoginModel } from '../../model/login.model';
+import { AlertModule } from 'ngx-bootstrap/alert';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, AlertModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
 
   loginForm: FormGroup;
+
+  isLoginFailed = false;
 
   constructor(
       private fb: FormBuilder,
@@ -29,33 +33,32 @@ export class LoginComponent {
           });
    }
 
-    username = "";
-    password = "";
 
     login(){
       this._store.dispatch(new ShowSpinner());
-      console.log("login");
-      console.log(this.username, this.password);
 
       if(!this.loginForm.valid) {
         this._store.dispatch(new HideSpinner());
         return;
       }
 
-      const loginParam = {
-        UserName: this.loginForm.get("UserName")?.value,
-        Password: this.loginForm.get("Password")?.value,
-      }
+      const loginParam = new LoginModel(
+        this.loginForm.get("UserName")?.value,
+        this.loginForm.get("Password")?.value
+      );
 
-      this._loginService.login(loginParam.UserName, loginParam.Password).pipe(
+      this._loginService.login(loginParam).pipe(
         take(1),
         tap((resp: any) => {
           console.log('resp', resp);
           if (resp.IsOk && resp.Results[0]?.Token) {
-          // Store the token in local storage or a service
             localStorage.setItem('auth_token', resp.Results[0].Token);
             this.router.navigate(["/dashboard"]);
+
+            return;
           }
+
+          this.isLoginFailed = true;
         }
       ),
         finalize(() => {

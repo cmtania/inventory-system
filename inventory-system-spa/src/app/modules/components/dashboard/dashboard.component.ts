@@ -11,6 +11,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 export class DashboardComponent implements OnInit {
 
   constructor() {}
+
+  lastUpdated: Date = new Date();
+
   ngOnInit(): void {
   }
 
