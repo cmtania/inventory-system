@@ -40,7 +40,7 @@
                 </div>
               </td>
               <td class="supplier">{{item.Supplier}}</td>
-              <td class="price">{{item.UnitPrice | currency}}</td>
+              <td class="price">{{item.UnitPrice | currency:'PHP':'symbol-narrow'}}</td>
               <td class="action text-center">
                   <button class="btn-edit" (click)="editItem(item.InventoryId)" role="button">Edit</button> 
                   <button class="btn-delete" (click)="confirmDelete(item)" role="button">Delete</button>

@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner.action';
 import { Store } from '@ngxs/store';
-import { take, tap, finalize  } from 'rxjs';
+import { Subject, Subscription, take, tap, finalize, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ProductModel } from '../../model/product.model';
 import { InventoryModel } from '../../model/inventory.model';
 import { InventoryService } from '../../services/inventory.service';
 import { Cart, Transaction } from '../../model/transaction.model';
+import { PaymentTypeModel } from '../../model/payment-type.model';
+import { PaymentTypeService } from '../../services/payment-type.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -15,33 +17,52 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
-export class TransactionComponent implements OnInit {
+export class TransactionComponent implements OnInit, OnDestroy {
 
   transactionForm: FormGroup;
+  searchTerm: string = '';
   currentDate = new Date(); // Add current date property
+
+  // Debounced search + O(1) product-index lookup keep keystrokes snappy
+  private readonly searchSubject = new Subject<string>();
+  private searchSub?: Subscription;
+  private readonly productIndexMap = new Map<any, number>();
+
   constructor(
     private fb: FormBuilder,
     private readonly _productService: ProductService,
     private readonly _store: Store,
-    private readonly _inventoryService: InventoryService){
+    private readonly _inventoryService: InventoryService,
+    private readonly _paymentTypeService: PaymentTypeService){
       this.transactionForm = this.fb.group({
         carts: this.fb.array([]),
         products: this.fb.array([]),
         details: this.fb.group({
           ItemCount: [0],
           Total: [0],
+          PaymentTypeId: [null, Validators.required],
         })
       });
   }
 
   productList = new Array<ProductModel>();
+  filteredProducts = new Array<any>();
   currentPage: number = 1;
   inventoryItems = new Array<InventoryModel>();
+  paymentTypes = new Array<PaymentTypeModel>();
 
   transaction = new Transaction( new Array<Cart>());
 
   ngOnInit(): void {
+    this.searchSub = this.searchSubject
+      .pipe(debounceTime(200), distinctUntilChanged())
+      .subscribe(() => this.applyFilter());
     this.loadInventory();
+    this.loadPaymentTypes();
+  }
+
+  ngOnDestroy(): void {
+    this.searchSub?.unsubscribe();
   }
 
   get carts(): FormArray {
@@ -57,12 +78,8 @@ export class TransactionComponent implements OnInit {
   }
 
   addToCart(item: any, index: number): void {
-    console.log("item", item);
-
     const unitPrice = this.getProductValue(index, 'UnitPrice');
     const quantity = this.getProductValue(index, 'Quantity');
-    console.log("unitPrice", unitPrice);
-    console.log("quantity", quantity);
 
     const selectedItem = this.fb.group({
       ItemId: [this.carts.length + 1],
@@ -113,27 +130,56 @@ export class TransactionComponent implements OnInit {
      this._productService.getProducts().pipe(
       take(1),
       tap((resp: any) => {
-        console.log("resp", resp);
         if (resp.IsOk) {
           this.productList = resp.Results[0];
           return;
         }
-  
       }),
       finalize(() => {
         this._store.dispatch(new HideSpinner());
       })
     ).subscribe();
-  
-    }
+  }
 
-    loadInventory() {
-      this._store.dispatch(new ShowSpinner());
-      this._inventoryService.getInventoryList().pipe(
-       take(1),
-       tap((resp: any) => {
-         console.log("resp", resp);
-         if (resp.IsOk) {
+  // Called from the template on every keystroke — just feeds the debounced stream
+  filterProducts() {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  private applyFilter() {
+    const term = this.searchTerm.trim().toLowerCase();
+
+    const source = !term
+      ? this.inventoryItems
+      : this.inventoryItems.filter(item =>
+          (item.ProductName?.toLowerCase().includes(term) ?? false) ||
+          (item.ProductCode?.toLowerCase().includes(term) ?? false) ||
+          (item.ProductDescription?.toLowerCase().includes(term) ?? false) ||
+          (item.Brand?.toLowerCase().includes(term) ?? false) ||
+          (item.Category?.toLowerCase().includes(term) ?? false)
+        );
+
+    this.filteredProducts = this.buildProductView(source);
+  }
+
+  // Flatten each product into a plain view-model so the template does pure
+  // property reads (no method calls) on every change-detection pass.
+  private buildProductView(source: InventoryModel[]): any[] {
+    return source.map(item => ({
+      ProductId: item.ProductId,
+      index: this.productIndexMap.get(item.ProductId) ?? 0,
+      ProductName: item.ProductName,
+      Category: item.Category,
+      UnitPrice: item.UnitPrice,
+    }));
+  }
+
+  loadInventory() {
+    this._store.dispatch(new ShowSpinner());
+    this._inventoryService.getInventoryList().pipe(
+      take(1),
+      tap((resp: any) => {
+        if (resp.IsOk) {
            this.inventoryItems = resp.Results[0];
             this.inventoryItems.forEach((item: InventoryModel) => {
               const productGroup = this.fb.group({
@@ -147,8 +193,10 @@ export class TransactionComponent implements OnInit {
                 Category: [item.Category],
                 UnitPrice: [item.UnitPrice]
               });
+              this.productIndexMap.set(item.ProductId, this.products.length);
               this.products.push(productGroup);
             });
+            this.applyFilter();
 
            return;
          }
@@ -158,6 +206,52 @@ export class TransactionComponent implements OnInit {
        })
      ).subscribe();
    }
+
+  loadPaymentTypes(): void {
+    this._paymentTypeService.getPaymentTypes().pipe(
+      take(1),
+      tap((resp: any) => {
+        if (resp.IsOk) {
+          this.paymentTypes = resp.Results[0] ?? [];
+        }
+      })
+    ).subscribe();
+  }
+
+  selectPaymentType(paymentTypeId: number): void {
+    this.details.get('PaymentTypeId')?.setValue(paymentTypeId);
+  }
+
+  get selectedPaymentTypeId(): number | null {
+    return this.details.get('PaymentTypeId')?.value ?? null;
+  }
+
+  get selectedPaymentTypeLabel(): string {
+    const selected = this.paymentTypes.find(
+      pt => pt.PaymentTypeId === this.selectedPaymentTypeId
+    );
+    return selected ? selected.Label : '';
+  }
+
+  processPayment(): void {
+    if (this.carts.length === 0) {
+      return;
+    }
+
+    if (this.selectedPaymentTypeId == null) {
+      this.details.get('PaymentTypeId')?.markAsTouched();
+      return;
+    }
+
+    const payload = {
+      PaymentTypeId: this.selectedPaymentTypeId,
+      Total: this.details.get('Total')?.value,
+      Items: this.carts.value,
+    };
+
+    // TODO: send `payload` to the checkout / transaction-save endpoint
+    console.log('process payment', payload);
+  }
 
    get getTotal(): number {
     let total = 0;
@@ -169,10 +263,22 @@ export class TransactionComponent implements OnInit {
     return total;
    }
 
-   getProductValue(index: number, controlName: string): string {
+   // Total number of units across all cart lines (for the header stat)
+   get totalItems(): number {
+    return this.carts.controls.reduce(
+      (sum, control) => sum + (Number(control.get('Quantity')?.value) || 0),
+      0
+    );
+   }
+
+  getProductValue(index: number, controlName: string): string {
     const control = this.products.at(index).get(controlName);
 
     return control ? control.value : "";
+  }
+
+  getProductIndex(productId: number): number {
+    return this.productIndexMap.get(productId) ?? 0;
   }
 
   getDetailsValue(controlName: string): string {
@@ -182,7 +288,6 @@ export class TransactionComponent implements OnInit {
   }
   
   calculateTotal(): void {
-    console.log("calculateTotal");
     const total = this.carts.controls.reduce((sum, control) => {
       const rowTotal = control.get('RowTotal')?.value || 0;
       return sum + rowTotal;
@@ -211,6 +316,7 @@ export class TransactionComponent implements OnInit {
     while (this.carts.length !== 0) {
       this.carts.removeAt(0);
     }
+    this.details.get('PaymentTypeId')?.reset(null);
     this.calculateTotal();
   }
 

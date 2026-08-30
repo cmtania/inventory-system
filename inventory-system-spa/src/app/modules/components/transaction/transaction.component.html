@@ -1,150 +1,176 @@
-<div class="pos-container">
-  <!-- Header Section -->
-  <div class="pos-header">
-    <div class="header-content">
-      <h1 class="pos-title">
-        <i class="fa-solid fa-cash-register"></i>
-        Transaction
-      </h1>
-      <div class="pos-info">
-        <span class="date">{{currentDate | date:'medium'}}</span>
-        <span class="cashier">Cashier: Admin</span>
-      </div>
+<div class="pos">
+  <!-- 00 — masthead -->
+  <header class="pos__masthead bento" role="region" aria-label="Point of sale">
+    <div class="masthead__brand">
+      <span class="micro">point of sale</span>
+      <h1 class="masthead__title">register</h1>
     </div>
+    <dl class="masthead__meta">
+      <div>
+        <dt class="micro">Cashier</dt>
+        <dd>Admin</dd>
+      </div>
+      <div>
+        <dt class="micro">Date</dt>
+        <dd>{{ currentDate | date:'medium' }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <!-- items stat -->
+  <div class="pos__stat pos__stat--items bento" role="region" aria-label="Items in order">
+    <span class="micro">Items</span>
+    <span class="stat__value">{{ totalItems }}</span>
+    <span class="stat__foot">{{ carts.length }} line{{ carts.length === 1 ? '' : 's' }}</span>
   </div>
 
-  <div class="pos-main">
-    <!-- Products Section -->
-    <div class="products-section">
-      <div class="section-header">
-        <h2>
-          <i class="fa-solid fa-box"></i>
-          Available Products
-        </h2>
-        <div class="search-bar">
-          <i class="fa-solid fa-search"></i>
-          <input type="text" placeholder="Search products..." class="search-input">
-        </div>
+  <!-- total stat -->
+  <div class="pos__stat pos__stat--total bento" role="region" aria-label="Order total">
+    <span class="micro">Order total</span>
+    <span class="stat__value">{{ getDetailsValue('Total') | currency:'PHP':'symbol-narrow' }}</span>
+    <span class="stat__foot">tax included · 0%</span>
+  </div>
+
+  <!-- 01 — catalog -->
+  <section class="pos__catalog bento" role="region" aria-label="Product catalog">
+    <div class="catalog__head">
+      <span class="micro">products</span>
+      <div class="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text"
+               class="search__input"
+               placeholder="search product, brand or category…"
+               [(ngModel)]="searchTerm"
+               (input)="filterProducts()">
       </div>
-      
-      <form [formGroup]="transactionForm">
-        <div class="products-grid" formArrayName="products">
-          <div *ngFor="let item of products.controls; let index = index" 
-               [formGroupName]="index" 
-               class="product-card">
-            <div class="product-image">
-              <img src="assets/images/cart.png" alt="product" class="product-img">
+    </div>
+
+    <form [formGroup]="transactionForm">
+      <div class="catalog__grid" formArrayName="products">
+        @for (p of filteredProducts; track p.ProductId) {
+          <article [formGroupName]="p.index" class="product">
+            <div class="product__body">
+              <span class="micro product__cat">{{ p.Category || 'uncategorized' }}</span>
+              <h4 class="product__name">{{ p.ProductName }}</h4>
+              <span class="product__price">{{ p.UnitPrice | currency:'PHP':'symbol-narrow' }}</span>
             </div>
-            <div class="product-info">
-              <h4 class="product-name">{{getProductValue(index, 'ProductName')}}</h4>
-              <div class="product-price">{{getProductValue(index, 'UnitPrice') | currency}}</div>
-            </div>
-            <div class="product-actions">
-              <div class="quantity-selector">
-                <button type="button" class="qty-btn minus" (click)="decreaseProductQuantity(index)">
+            <div class="product__actions">
+              <div class="stepper" role="group" aria-label="Quantity to add">
+                <button type="button" class="stepper__btn" (click)="decreaseProductQuantity(p.index)" aria-label="Decrease quantity">
                   <i class="fa-solid fa-minus"></i>
                 </button>
-                <input type="number" formControlName="Quantity" class="qty-input" min="1" max="100" value="1">
-                <button type="button" class="qty-btn plus" (click)="increaseProductQuantity(index)">
+                <input type="number" formControlName="Quantity" class="stepper__input" min="1" max="100">
+                <button type="button" class="stepper__btn" (click)="increaseProductQuantity(p.index)" aria-label="Increase quantity">
                   <i class="fa-solid fa-plus"></i>
                 </button>
               </div>
-              <button type="button" class="add-to-cart-btn" (click)="addToCart(item, index)">
-                <i class="fa-solid fa-plus"></i>
+              <button type="button" class="btn btn--primary product__add" (click)="addToCart(p, p.index)">
+                <i class="fa-solid fa-plus"></i> Add
               </button>
             </div>
+          </article>
+        }
+        @if (filteredProducts.length === 0) {
+          <div class="catalog__empty">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <h3>Nothing found</h3>
+            <p>No products match your search.</p>
           </div>
-        </div>
-      </form>
+        }
+      </div>
+    </form>
+  </section>
+
+  <!-- 02 — order -->
+  <aside class="pos__cart bento" role="region" aria-label="Current order">
+    <div class="cart__head">
+      <span class="micro">cart</span>
+      @if (carts.length > 0) {
+        <span class="pill pill--accent">{{ carts.length }}</span>
+      }
     </div>
 
-    <!-- Cart Section -->
-    <div class="cart-section">
-      <div class="section-header">
-        <h2>
-          <i class="fa-solid fa-shopping-cart"></i>
-          Cart Items
-          <span class="item-count" *ngIf="carts.length > 0">({{carts.length}})</span>
-        </h2>
-      </div>
-
-      <div class="cart-content">
-        <form [formGroup]="transactionForm">
-          <div class="cart-items" formArrayName="carts" *ngIf="carts.length > 0; else emptyCart">
-            <div *ngFor="let cart of carts.controls; let index = index" 
-                 [formGroupName]="index" 
-                 class="cart-item">
-              <!-- <div class="item-image">
-                <img src="assets/images/cart.png" alt="product" class="cart-item-img">
-              </div> -->
-              <div class="item-content">
-                <div class="item-header">
-                  <div class="item-details">
-                    <h4 class="item-name">{{cart.get('ProductName')?.value}}</h4>
-                    <p class="item-description">{{cart.get('Description')?.value}}</p>
-                    <div class="item-price">{{cart.get('UnitPrice')?.value | currency}} each</div>
-                  </div>
-                  <button type="button" class="remove-btn" (click)="deleteCartItem(index)">
-                    <i class="fa-solid fa-trash"></i>
+    <form [formGroup]="transactionForm" class="cart__form">
+      @if (carts.length > 0) {
+        <ul class="cart__list" formArrayName="carts">
+          @for (cart of carts.controls; track cart; let index = $index) {
+            <li [formGroupName]="index" class="line">
+              <div class="line__top">
+                <div class="line__info">
+                  <h4 class="line__name">{{ cart.get('ProductName')?.value }}</h4>
+                  <span class="micro">{{ cart.get('UnitPrice')?.value | currency:'PHP':'symbol-narrow' }} each</span>
+                </div>
+                <button type="button" class="line__remove" (click)="deleteCartItem(index)" aria-label="Remove item">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+              <div class="line__bottom">
+                <div class="stepper" role="group" aria-label="Line quantity">
+                  <button type="button" class="stepper__btn" (click)="decreaseQuantity(index)" aria-label="Decrease quantity">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <input type="text" formControlName="Quantity" (change)="quantityChange(index)" class="stepper__input">
+                  <button type="button" class="stepper__btn" (click)="increaseQuantity(index)" aria-label="Increase quantity">
+                    <i class="fa-solid fa-plus"></i>
                   </button>
                 </div>
-                <div class="item-footer">
-                  <div class="quantity-control">
-                    <button type="button" class="qty-btn minus" (click)="decreaseQuantity(index)">
-                      <i class="fa-solid fa-minus"></i>
-                    </button>
-                    <input type="text" 
-                           formControlName="Quantity" 
-                           (change)="quantityChange(index)"
-                           class="qty-input" 
-                           min="1" 
-                           max="100">
-                    <button type="button" class="qty-btn plus" (click)="increaseQuantity(index)">
-                      <i class="fa-solid fa-plus"></i>
-                    </button>
-                  </div>
-                  <div class="item-total">{{cart.get('RowTotal')?.value | currency}}</div>
-                </div>
+                <span class="line__total">{{ cart.get('RowTotal')?.value | currency:'PHP':'symbol-narrow' }}</span>
               </div>
-            </div>
-          </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="cart__empty">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <h3>No items yet</h3>
+          <p>Tap a product to start the order.</p>
+        </div>
+      }
+    </form>
 
-          <ng-template #emptyCart>
-            <div class="empty-cart">
-              <i class="fa-solid fa-shopping-cart"></i>
-              <h3>Your cart is empty</h3>
-              <p>Add some products to get started</p>
-            </div>
-          </ng-template>
-        </form>
+    @if (carts.length > 0) {
+      <div class="cart__summary">
+        <div class="summary__row">
+          <span>Subtotal</span>
+          <span>{{ getDetailsValue('Total') | currency:'PHP':'symbol-narrow' }}</span>
+        </div>
+        <div class="summary__row">
+          <span>Tax (0%)</span>
+          <span>{{ 0 | currency:'PHP':'symbol-narrow' }}</span>
+        </div>
+        <div class="summary__row summary__row--total">
+          <span>Total</span>
+          <span>{{ getDetailsValue('Total') | currency:'PHP':'symbol-narrow' }}</span>
+        </div>
 
-        <!-- Cart Summary -->
-        <div class="cart-summary" *ngIf="carts.length > 0">
-          <div class="summary-row">
-            <span class="label">Subtotal:</span>
-            <span class="value">{{getDetailsValue('Total') | currency}}</span>
-          </div>
-          <div class="summary-row">
-            <span class="label">Tax (0%):</span>
-            <span class="value">$0.00</span>
-          </div>
-          <div class="summary-row total-row">
-            <span class="label">Total:</span>
-            <span class="value">{{getDetailsValue('Total') | currency}}</span>
-          </div>
-          
-          <div class="checkout-actions">
-            <button type="button" class="btn btn-secondary clear-cart" (click)="clearCart()">
-              <i class="fa-solid fa-trash"></i>
-              Clear Cart
-            </button>
-            <button type="button" class="btn btn-primary checkout-btn">
-              <i class="fa-solid fa-credit-card"></i>
-              Process Payment
-            </button>
+        <div class="pay-methods" role="group" aria-label="Payment method">
+          <span class="micro">Payment method</span>
+          <div class="pay-methods__list">
+            @for (pt of paymentTypes; track pt.PaymentTypeId) {
+              <button type="button"
+                      class="pay-method"
+                      [class.pay-method--active]="selectedPaymentTypeId === pt.PaymentTypeId"
+                      (click)="selectPaymentType(pt.PaymentTypeId)">
+                {{ pt.Label }}
+              </button>
+            }
+            @if (paymentTypes.length === 0) {
+              <span class="pay-methods__empty">No payment methods available</span>
+            }
           </div>
         </div>
+
+        <div class="cart__actions">
+          <button type="button" class="btn btn--ghost" (click)="clearCart()">
+            <i class="fa-solid fa-trash-can"></i> Clear
+          </button>
+          <button type="button" class="btn btn--primary btn--pay"
+                  [disabled]="!selectedPaymentTypeId"
+                  (click)="processPayment()">
+            <i class="fa-solid fa-credit-card"></i> Pay {{ getDetailsValue('Total') | currency:'PHP':'symbol-narrow' }}
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
+    }
+  </aside>
 </div>
