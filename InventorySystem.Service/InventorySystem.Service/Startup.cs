@@ -100,6 +100,8 @@ namespace InventorySystem.Service
             builder.RegisterType<InventoryService>().As<IInventoryService>();
             builder.RegisterType<InventoryRepository>().As<IInventoryRepository>();
             builder.RegisterType<RoleRepository>().As<IRoleRepository>();
+            builder.RegisterType<PaymentTypeRepository>().As<IPaymentTypeRepository>();
+            builder.RegisterType<PaymentTypeService>().As<IPaymentTypeService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
