@@ -1,0 +1,46 @@
+﻿using InventorySystem.Service.Interfaces;
+using InventorySystem.Service.Models.RequestModel;
+using InventorySystem.Service.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InventorySystem.Service.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class BrandController : ControllerBase
+    {
+        private readonly IBrandService _brandService;
+        public BrandController(IBrandService brandService)
+        {
+            _brandService = brandService;
+        }
+
+        [Route("list")]
+        [HttpGet]
+        public async Task<IActionResult> GetProductsAsync()
+        {
+            var brands = await _brandService.GetBrandsAsync();
+
+            return Ok(brands);
+        }
+
+        [Route("get/{brandId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetBrandByIdAsync(int brandId)
+        {
+            var brand = await _brandService.GetBrandByIdAsync(brandId);
+
+            return Ok(brand);
+        }
+
+        [Route("save")]
+        [HttpPost]
+        public async Task<IActionResult> SaveBrand([FromBody] SaveBrandRequestDto request)
+        {
+            var result = await _brandService.SaveBrandAsync(request);
+
+            return Ok(result);
+        }
+
+    }
+}

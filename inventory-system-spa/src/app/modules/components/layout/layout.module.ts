@@ -10,10 +10,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { WebApi } from "../../services/webapi.service";
 import { ProductService } from "../../services/product.service";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 import { ProductComponent } from "../product/product.component";
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { ProductModalComponent } from "../modal/product-modal/product-modal.component";
+import { BrandService } from "../../services/brand.service";
+import { InventoryComponent } from "../inventory/inventory.component";
+import { InventoryModalComponent } from "../modal/inventory-modal/inventory-modal.component";
+import { TransactionComponent } from "../transaction/transaction.component";
+import { BrandModalComponent } from "../modal/brand-modal/brand-modal.component";
+import { CategoryModalComponent } from "../modal/category-modal/category-modal.component";
+import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   imports: [
@@ -22,7 +29,8 @@ import { ProductModalComponent } from "../modal/product-modal/product-modal.comp
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
-    ModalModule
+    ModalModule,
+    NgbDropdownModule
   ],  
   declarations: [
     LayoutComponent,
@@ -31,12 +39,18 @@ import { ProductModalComponent } from "../modal/product-modal/product-modal.comp
     HeaderComponent,
     ReportsComponent,
     ProductComponent,
-    ProductModalComponent
+    InventoryComponent,
+    ProductModalComponent,
+    InventoryModalComponent,
+    BrandModalComponent,
+    CategoryModalComponent,
+    TransactionComponent
   ],
   exports:[MatButtonModule],  
   providers:[ 
     WebApi,
     ProductService,
+    BrandService,
     BsModalService
   ]
 })

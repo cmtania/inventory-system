@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-layout',
   standalone: false,
@@ -7,5 +8,15 @@ import { Component } from '@angular/core';
 })
 export class LayoutComponent {
   isExpanded: boolean = false;
-  constructor(){}
+
+  fullName = localStorage.getItem('full_name') || '';
+  role = localStorage.getItem('role') || '';
+
+  constructor(
+    private readonly _router: Router,
+  ){}
+
+  logout() {
+    this._router.navigate(['/login']);
+  }
 }

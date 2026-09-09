@@ -10,4 +10,6 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'inventory-system';
+
+  isAuthorized = true;
 }

@@ -4,8 +4,9 @@ namespace InventorySystem.Service.Interfaces
 {
     public interface IProductRepository
     {
-        List<TrnProduct> GetProducts();
-        TrnProduct GetProduct(int productId);
+        Task<List<TrnProduct>> GetProducts();
+        Task<TrnProduct> GetProduct(int productId);
+        Task<List<TrnProduct>> SearchProducts(string term);
         Task SaveProduct(TrnProduct product);
         Task UpdateProduct(TrnProduct product);
         Task DeleteProduct(TrnProduct product);

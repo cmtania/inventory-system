@@ -8,9 +8,10 @@ namespace InventorySystem.Service.Interfaces
     public interface IProductService
     {
         Task<ApiResponse> GetProductsAsync();
-        Task<ApiResponse> GetProductAsync(int productId);
-        Task<ApiResponse> SaveProductAsync(ProductRequest product);
-        Task<ApiResponse> UpdateProductAsync(ProductRequest product);
+        Task<ApiResponse> GetProductByIdAsync(int productId);
+        Task<ApiResponse> SearchProductAsync(string term);
+        Task<ApiResponse> SaveProductAsync(SaveProductRequest product);
+        Task<ApiResponse> UpdateProductAsync(ProductRequestDto product);
         Task<ApiResponse> DeleteProductAsync(int productId);
     }
 }

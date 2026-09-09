@@ -1,72 +1,249 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { SubSink } from 'subsink';
 import { ProductModel } from '../../model/product.model';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { ProductModalComponent } from '../modal/product-modal/product-modal.component';
-import { CONSTANTS } from '../../model/constants.model';
+import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
+import { TriggerSaveProduct } from '../../state-management/actions/product.action';
+import { finalize, take, tap } from 'rxjs';
+import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner.action';
+import { ToastService } from '../../shared/toast/toast.service';
+import { isUndefined } from '@ngxs/store/operators/utils';
+import { ResponseObject } from '../../model/response.object';
+import { COMMON, PRODUCT, BRAND, CATEGORY } from '../../model/constants.model';
+import { BrandModalComponent } from '../modal/brand-modal/brand-modal.component';
+import { CategoryModalComponent } from '../modal/category-modal/category-modal.component';
+import { CategoryService } from '../../services/category.service';
+import { CategoryModel } from '../../model/category.model';
 
 @Component({
   selector: 'app-product',
   standalone: false,
   templateUrl: './product.component.html',
-  styleUrl: './product.component.scss'
+  styleUrl: './product.component.scss',
 })
 export class ProductComponent implements OnInit, OnDestroy {
+  @ViewChild('toastTemplate') toastTemplate!: TemplateRef<any>;
+  @ViewChild('deleteConfirmation') deleteConfirmation!: TemplateRef<any>;
 
-  constructor(private productService: ProductService, 
-              private modalService: BsModalService,){
-  }
+  constructor(
+    private readonly _productService: ProductService,
+    private readonly _categoryService: CategoryService,
+    private readonly _action$: Actions,
+    private readonly _store: Store,
+    private readonly _toastService: ToastService,
+    private _modalService: BsModalService
+  ) {}
 
   subsink = new SubSink();
   productList = new Array<ProductModel>();
-  modalTitle: string = "";
+  categoryList = new Array<CategoryModel>();
+  filteredProducts = new Array<ProductModel>();
+  paginatedProducts = new Array<ProductModel>();
+  modalTitle: string = '';
   bsModalRef?: BsModalRef;
 
-  ngOnInit(){
-    this.subsink.add(
-      this.getProducts()
-    );
+  toastMessage: string = '';
+  searchTerm: string = '';
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 0;
+  totalPagesArray: number[] = [];
+
+  productIdToDelete: number = 0;
+
+  ngOnInit() {
+    this.subsink.add(this.listenToSaveProduct());
+
+    this.getProducts();
+    this.getCategories();
+  }
+
+  listenToSaveProduct() {
+    return this._action$
+      .pipe(ofActionSuccessful(TriggerSaveProduct))
+      .subscribe(() => {
+        this.getProducts();
+      });
   }
 
   getProducts() {
-    return this.productService.getProducts().subscribe(
-      (response) => {
-        if (response.IsOk) {
-          this.productList = response.Results[0];
+    this._store.dispatch(new ShowSpinner());
+    this._productService
+      .getProducts()
+      .pipe(
+        take(1),
+        finalize(() => {
+          this._store.dispatch(new HideSpinner());
+        })
+      ).subscribe((resp: any) => {
+        console.log('resp', resp);
+        if (resp.IsOk) {
+          this.productList = resp.Results[0];
+          this.filterProducts();
+
           return;
-        } 
-      },
-    );
+        }
+
+        this.toastMessage = 'An error occurred while loading the products.';
+        this._toastService.show(this.toastTemplate, 'ERROR');
+      });
   }
 
-  
+  filterProducts() {
+    this.filteredProducts = this.productList.filter(
+      (product) =>
+        product.ProductName.toLowerCase().includes(
+          this.searchTerm.toLowerCase()
+        ) ||
+        product.ProductCode.toLowerCase().includes(
+          this.searchTerm.toLowerCase()
+        ) ||
+        product.ProductDescription.toLowerCase().includes(
+          this.searchTerm.toLowerCase()
+        ) ||
+        product.Brand.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        product.Category.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
 
-  ngOnDestroy(){
-    this.subsink.unsubscribe();
+    this.totalPages = Math.ceil(this.filteredProducts.length / this.pageSize);
+    this.totalPagesArray = Array.from(
+      { length: this.totalPages },
+      (_, i) => i + 1
+    );
+    this.changePage(1);
+  }
+
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedProducts = this.filteredProducts.slice(startIndex, endIndex);
   }
 
   createProduct() {
     const initialState: ModalOptions = {
       initialState: {
-        title: CONSTANTS.PRODUCT_CreateModalTitle,
-      }
+        title: PRODUCT.CreateModalTitle,
+        productId: 0,
+        isUpdate: false,
+      },
+      backdrop: 'static',
+      keyboard: false,
     };
-    this.bsModalRef = this.modalService.show(ProductModalComponent, initialState);
-    this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonClose;
-    this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonSave;
+    this.bsModalRef = this._modalService.show(
+      ProductModalComponent,
+      initialState
+    );
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
   }
 
-  editProduct(productId: number){
-    console.log("product", productId);
+  editProduct(productId: number) {
+    console.log('product', productId);
     const initialState: ModalOptions = {
       initialState: {
-        title: CONSTANTS.PRODUCT_EditModalTitle
+        title: PRODUCT.EditModalTitle,
+        productId: productId,
+        isUpdate: true,
       },
-      class: "modal-lg"
+      class: 'modal-lg',
+      backdrop: 'static',
+      keyboard: false,
     };
-    this.bsModalRef = this.modalService.show(ProductModalComponent, initialState);
-    this.bsModalRef.content.closeBtnName = CONSTANTS.LABEL_ButtonCancel;
-    this.bsModalRef.content.saveBtnName = CONSTANTS.LABEL_ButtonUpdate;
+    this.bsModalRef = this._modalService.show(
+      ProductModalComponent,
+      initialState
+    );
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonCancel;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonUpdate;
+  }
+
+  confirmDelete(productId: number) {
+    this.productIdToDelete = productId;
+    const initialState: ModalOptions = {
+      backdrop: 'static',
+      keyboard: false,
+    };
+    this.bsModalRef = this._modalService.show(
+      this.deleteConfirmation,
+      initialState
+    );
+  }
+
+  deleteProduct() {
+    this._productService
+      .deleteProduct(this.productIdToDelete)
+      .pipe(
+        take(1),
+        tap((resp: ResponseObject) => {
+          if (resp && resp.IsOk) {
+            this.bsModalRef?.hide();
+            this._store.dispatch(new TriggerSaveProduct());
+            return;
+          }
+
+          this.toastMessage = 'An error occurred while deleting the product.';
+          this._toastService.show(this.toastTemplate, 'ERROR');
+        }),
+        finalize(() => {
+          this._store.dispatch(new HideSpinner());
+        })
+      )
+      .subscribe();
+  }
+
+  createBrand() {
+    const initialState: ModalOptions = {
+      initialState: {
+        title: BRAND.CreateModalTitle,
+      },
+      backdrop: 'static',
+      keyboard: false,
+    };
+    this.bsModalRef = this._modalService.show(
+      BrandModalComponent,
+      initialState
+    );
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
+  }
+
+  createCategory() {
+    const initialState: ModalOptions = {
+      initialState: {
+        title: CATEGORY.CreateModalTitle,
+      },
+      backdrop: 'static',
+      keyboard: false,
+    };
+    this.bsModalRef = this._modalService.show(
+      CategoryModalComponent,
+      initialState
+    );
+    this.bsModalRef.content.closeBtnName = COMMON.LABEL_ButtonClose;
+    this.bsModalRef.content.saveBtnName = COMMON.LABEL_ButtonSave;
+  }
+
+  private getCategories() {
+    this._categoryService
+      .getCategories()
+      .pipe(
+        take(1),
+        tap((resp: ResponseObject) => {
+          if (resp && resp.IsOk) {
+            this.categoryList = resp.Results[0];
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  ngOnDestroy() {
+    this.subsink.unsubscribe();
   }
 }

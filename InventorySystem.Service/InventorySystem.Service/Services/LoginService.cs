@@ -1,19 +1,82 @@
 ﻿using InventorySystem.Service.Interfaces;
 using InventorySystem.Service.Models;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using LoginRequestDto = InventorySystem.Service.Models.LoginRequestDto;
 
 namespace InventorySystem.Service.Services
 {
     public class LoginService : ILoginService
     {
-        private readonly ILoginModel _loginModel;
-        public LoginService(ILoginModel loginModel)
+        private readonly IConfiguration _config;
+        private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
+        public LoginService(IConfiguration config, IUserRepository userRepository, IRoleRepository roleRepository)
         {
-            _loginModel = loginModel;
+            _config = config;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
-        public async Task<ApiResponse> LoginAsync(LoginRequest request)
+
+        public async Task<ApiResponse> LoginAsync(LoginRequestDto loginRequest)
         {
-            return await _loginModel.LoginAsync(request);
+            var apiResponse = new ApiResponse
+            {
+                IsOk = true,
+            };
+            try
+            {
+                var user = await _userRepository.GetUser(loginRequest.UserName, loginRequest.Password);
+
+                if (user == null)
+                {
+                    apiResponse.IsOk = false;
+                    var responseMessage = new ResponseMessage { Title = "Login Failed", Message = "Username or password you entered is incorrect." };
+                    apiResponse.Messages = [responseMessage];
+
+                    return apiResponse;
+                }
+
+                var role = await _roleRepository.GetRoleById(user.RlId);
+
+                string token = GenerateToken();
+                apiResponse.Results = [new 
+                    { 
+                       Token = token,
+                       FullName = $"{user.FrstNm} {user.LstNm}",
+                       Role =  role.RlNm
+                    }
+                   ];
+                return apiResponse;
+
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsOk = false;
+                var responseMessage = new ResponseMessage { Title = "Login Failed", Message = ex.Message };
+                apiResponse.Messages = [responseMessage];
+                return apiResponse;
+            }
+        }
+
+        private string GenerateToken()
+        {
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var Sectoken = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Issuer"],
+              null,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+
+            var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+
+            return token;
         }
 
     }

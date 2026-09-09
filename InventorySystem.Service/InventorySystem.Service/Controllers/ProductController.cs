@@ -14,7 +14,7 @@ namespace InventorySystem.Service.Controllers
             _productService = productService;
         }
 
-        [Route("getproducts")]
+        [Route("list")]
         [HttpGet]
         public async Task<IActionResult> GetProductsAsync()
         {
@@ -23,34 +23,43 @@ namespace InventorySystem.Service.Controllers
             return Ok(products);
         }
 
-        [Route("getproduct/{productId}")]
+        [Route("search/{term}")]
+        [HttpGet]
+        public async Task<IActionResult> SearchProductsAsync(string term)
+        {
+            var products = await _productService.SearchProductAsync(term);
+
+            return Ok(products);
+        }
+
+        [Route("{productId}")]
         [HttpGet]
         public async Task<IActionResult> GetProductAsync(int productId)
         {
-            var product = await _productService.GetProductAsync(productId);
+            var product = await _productService.GetProductByIdAsync(productId);
 
             return Ok(product);
         }
 
-        [Route("saveproduct")]
+        [Route("save")]
         [HttpPost]
-        public async Task<IActionResult> SaveProductAsync([FromBody] ProductRequest product)
+        public async Task<IActionResult> SaveProductAsync([FromBody] SaveProductRequest product)
         {
             var saveResponse = await _productService.SaveProductAsync(product);
 
             return Ok(saveResponse);
         }
 
-        [Route("updateproduct")]
+        [Route("update")]
         [HttpPost]
-        public async Task<IActionResult> UpdateProductAsync([FromBody] ProductRequest product)
+        public async Task<IActionResult> UpdateProductAsync([FromBody] ProductRequestDto product)
         {
             var updateResponse = await _productService.UpdateProductAsync(product);
 
             return Ok(updateResponse);
         }
 
-        [Route("deleteproduct/{productId}")]
+        [Route("delete/{productId}")]
         [HttpDelete]
         public async Task<IActionResult> UpdateProductAsync(int productId)
         {

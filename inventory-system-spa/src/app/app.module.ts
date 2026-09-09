@@ -1,36 +1,47 @@
 
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgxsModule } from '@ngxs/store';
 import { AppRoutingModule } from './app-routing.module';
-import { AppConfigService } from './core/app-config-service';
+import { AppConfig } from './core/app-config-service';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { SpinnerComponent } from './modules/shared/spinner/spinner.component';
+import { SpinnerState } from './modules/state-management/states/spinner.state';
+import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { ToastsContainerComponent } from './modules/shared/toast/toast-container.component';
 
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        SpinnerComponent,
+        ToastsContainerComponent
     ],
     imports: [
         CommonModule,
         BrowserModule,
         AppRoutingModule,
         HttpClientModule,
-        NgxsModule.forRoot([], { developmentMode: /** !environment.production */ false })
+        NgbToastModule,
+        NgTemplateOutlet,
+        NgxsModule.forRoot([SpinnerState], { developmentMode: /** !environment.production */ false })
     ],
+    exports: [],
     providers:[
         {
         provide: APP_INITIALIZER,
-        useFactory: (appConfigService: AppConfigService) => () => {
+        useFactory: (appConfigService: AppConfig) => () => {
         const configFile = environment.production ? 
             `assets/config/config.json` : `assets/config/config.dev.json`;
-        appConfigService.load(configFile);
+
+            return appConfigService.load(configFile).then(()=>{
+                console.log("app config initialized.");
+            });
         },
-        deps: [AppConfigService],
+        deps: [AppConfig],
         multi: true
         },
         HttpClientModule

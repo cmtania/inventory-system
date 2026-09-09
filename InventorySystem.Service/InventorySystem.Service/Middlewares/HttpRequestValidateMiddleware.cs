@@ -15,7 +15,7 @@
             if (context.Request.Headers.ContainsKey("Authorize-Application"))
             {
                 var headerValue = context.Request.Headers["Authorize-Application"].ToString();
-                if (headerValue != Constants.AuthorizeApp) {
+                if (headerValue != Constants.App.AuthorizeApp) {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     await context.Response.WriteAsync("Access Denied for this request.");
                     return;

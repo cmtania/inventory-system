@@ -1,1 +1,213 @@
-<p>dashboard works!</p>
+<div class="dash">
+
+  <!-- masthead -->
+  <header class="bento dash__mast" role="region" aria-label="Inventory dashboard">
+    <div class="mast__brand">
+      <span class="micro">inventory</span>
+      <h1 class="mast__title">dashboard</h1>
+      <p class="mast__sub">Live overview built from your inventory records</p>
+    </div>
+    <div class="mast__aside">
+      <span class="micro">Last updated</span>
+      <span class="mast__time">{{ lastUpdated | date:'medium' }}</span>
+      <button type="button" class="btn btn--ghost" (click)="refresh()" [disabled]="loading">
+        <i class="fa-solid fa-rotate"></i> {{ loading ? 'Refreshing…' : 'Refresh' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- headline stats -->
+  <div class="bento dash__stat dash__stat--unit" role="region" aria-label="Units on hand">
+    <span class="micro">Units on hand</span>
+    <span class="stat__value">{{ totalUnits | number }}</span>
+    <span class="stat__foot">across {{ totalSkus | number }} SKUs</span>
+  </div>
+
+  <div class="bento dash__stat dash__stat--val" role="region" aria-label="Total stock value">
+    <span class="micro">Stock value</span>
+    <span class="stat__value">{{ stockValue | currency:'PHP':'symbol-narrow' }}</span>
+    <span class="stat__foot">avg {{ avgUnitPrice | currency:'PHP':'symbol-narrow' }} / item</span>
+  </div>
+
+  <!-- stock health + quick counts, one row -->
+  <div class="dash__band">
+    <section class="bento dash__health" role="region" aria-label="Stock health">
+      <span class="micro">stock health</span>
+
+      <div class="health__figures">
+        <div class="health__fig">
+          <span class="health__num health__num--ok">{{ healthyCount | number }}</span>
+          <span class="micro">In stock</span>
+        </div>
+        <div class="health__fig">
+          <span class="health__num health__num--warn">{{ lowStockCount | number }}</span>
+          <span class="micro">Low</span>
+        </div>
+        <div class="health__fig">
+          <span class="health__num health__num--danger">{{ outOfStockCount | number }}</span>
+          <span class="micro">Out</span>
+        </div>
+      </div>
+
+      <div class="health__bar"
+           role="img"
+           [attr.aria-label]="healthyCount + ' in stock, ' + lowStockCount + ' low, ' + outOfStockCount + ' out of stock'">
+        <span class="health__seg health__seg--ok" [style.width.%]="inStockPct"></span>
+        <span class="health__seg health__seg--warn" [style.width.%]="lowStockPct"></span>
+        <span class="health__seg health__seg--danger" [style.width.%]="outOfStockPct"></span>
+      </div>
+
+      <span class="stat__foot">{{ inStockPct | number:'1.0-0' }}% of SKUs fully stocked</span>
+    </section>
+
+    <div class="bento dash__stat dash__stat--sku" role="region" aria-label="Catalog spread">
+      <span class="micro">Catalog</span>
+      <span class="stat__value">{{ categoriesCount }}</span>
+      <span class="stat__foot">categories · {{ brandsCount }} brands</span>
+    </div>
+
+    <div class="bento dash__stat dash__stat--cat" role="region" aria-label="Suppliers">
+      <span class="micro">Suppliers</span>
+      <span class="stat__value">{{ suppliersCount }}</span>
+      <span class="stat__foot">active sources</span>
+    </div>
+
+    <div class="bento dash__stat dash__stat--low" role="region" aria-label="Low stock items">
+      <span class="micro">Low stock</span>
+      <span class="stat__value">{{ lowStockCount }}</span>
+      <span class="stat__foot">1–{{ lowStockThreshold }} units left</span>
+    </div>
+
+    <div class="bento dash__stat dash__stat--out" role="region" aria-label="Out of stock items">
+      <span class="micro">Out of stock</span>
+      <span class="stat__value">{{ outOfStockCount }}</span>
+      <span class="stat__foot">needs restock now</span>
+    </div>
+  </div>
+
+  <!-- reorder list -->
+  <section class="bento dash__panel dash__reorder" role="region" aria-label="Reorder soon">
+    <div class="panel__head">
+      <span class="micro">reorder soon</span>
+      <span class="pill pill--warn">{{ lowStockItems.length }}</span>
+    </div>
+
+    @if (lowStockItems.length > 0) {
+      <ul class="dash-rows">
+        @for (it of lowStockItems; track it.InventoryId) {
+          <li class="dash-row">
+            <div class="dash-row__main">
+              <span class="dash-row__name">{{ it.ProductName }}</span>
+              <span class="micro">{{ it.ProductCode }} · {{ it.Supplier || 'no supplier' }}</span>
+            </div>
+            <span class="dash-row__qty" [class.dash-row__qty--out]="(+it.Quantity) <= 0">
+              {{ +it.Quantity | number }}<span class="micro">left</span>
+            </span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <div class="panel__empty">
+        <i class="fa-solid fa-circle-check"></i>
+        <p>Every item is above {{ lowStockThreshold }} units.</p>
+      </div>
+    }
+  </section>
+
+  <!-- top value -->
+  <section class="bento dash__panel dash__topvalue" role="region" aria-label="Where stock value sits">
+    <div class="panel__head">
+      <span class="micro">where value sits</span>
+    </div>
+
+    @if (topValueItems.length > 0) {
+      <ol class="dash-rows">
+        @for (row of topValueItems; track row.item.InventoryId) {
+          <li class="dash-row">
+            <div class="dash-row__main">
+              <span class="dash-row__name">{{ row.item.ProductName }}</span>
+              <span class="micro">{{ +row.item.Quantity | number }} × {{ +row.item.UnitPrice | currency:'PHP':'symbol-narrow' }}</span>
+            </div>
+            <span class="dash-row__value">{{ row.value | currency:'PHP':'symbol-narrow' }}</span>
+          </li>
+        }
+      </ol>
+    } @else {
+      <div class="panel__empty">
+        <i class="fa-solid fa-box-open"></i>
+        <p>No inventory records yet.</p>
+      </div>
+    }
+  </section>
+
+  <!-- value by category -->
+  <section class="bento dash__panel dash__category" role="region" aria-label="Value by category">
+    <div class="panel__head">
+      <span class="micro">value by category</span>
+    </div>
+
+    @if (categoryStats.length > 0) {
+      <ul class="cats">
+        @for (c of categoryStats; track c.name) {
+          <li class="cat">
+            <div class="cat__top">
+              <span class="cat__name">{{ c.name }}</span>
+              <span class="cat__value">{{ c.value | currency:'PHP':'symbol-narrow' }}</span>
+            </div>
+            <div class="cat__track">
+              <span class="cat__fill" [style.width.%]="c.share * 100"></span>
+            </div>
+            <span class="micro">{{ c.skus }} SKUs · {{ c.units | number }} units</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <div class="panel__empty">
+        <i class="fa-solid fa-layer-group"></i>
+        <p>No categories to summarise.</p>
+      </div>
+    }
+  </section>
+
+  <!-- sales trend -->
+  <section class="bento dash__panel dash__sales" role="region" aria-label="Sales trend">
+    <div class="panel__head">
+      <span class="micro">sales trend</span>
+      <div class="seg" role="group" aria-label="Sales period">
+        <button type="button" class="seg__btn" [class.seg__btn--active]="salesPeriod === 'day'" (click)="setSalesPeriod('day')">Day</button>
+        <button type="button" class="seg__btn" [class.seg__btn--active]="salesPeriod === 'week'" (click)="setSalesPeriod('week')">Week</button>
+        <button type="button" class="seg__btn" [class.seg__btn--active]="salesPeriod === 'month'" (click)="setSalesPeriod('month')">Month</button>
+      </div>
+    </div>
+
+    @if (salesLoading) {
+      <div class="panel__empty">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading sales…</p>
+      </div>
+    } @else if (salesBars.length > 0) {
+      <div class="chart">
+        @for (bar of salesBars; track bar.label) {
+          <div class="chart__col">
+            <div class="chart__bar-wrap">
+              <span class="chart__bar"
+                    [style.height.%]="bar.pct"
+                    [attr.aria-label]="bar.label + ': ' + bar.value"></span>
+            </div>
+            <span class="chart__x micro">{{ bar.label }}</span>
+          </div>
+        }
+      </div>
+      <div class="chart__foot">
+        <span class="micro">{{ salesPeriodLabel }} total</span>
+        <span class="chart__total">{{ salesTotal | currency:'PHP':'symbol-narrow' }}</span>
+      </div>
+    } @else {
+      <div class="panel__empty">
+        <i class="fa-solid fa-chart-column"></i>
+        <p>No sales recorded for this period yet.</p>
+      </div>
+    }
+  </section>
+
+</div>

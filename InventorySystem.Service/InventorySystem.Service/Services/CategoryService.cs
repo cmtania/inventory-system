@@ -1,0 +1,94 @@
+﻿using InventorySystem.Service.Interfaces;
+using InventorySystem.Service.Models;
+using InventorySystem.Service.Models.DatabaseModel;
+using InventorySystem.Service.Models.RequestModel;
+using InventorySystem.Service.Repository;
+using InventorySystem.Service.ViewModels;
+
+namespace InventorySystem.Service.Services
+{
+    public class CategoryService : ICategoryService
+    {
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoryService(ICategoryRepository categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
+
+        public async Task<ApiResponse> SaveCategoryAsync(SaveCategoryRequestDto request)
+        {
+            try
+            {
+                var brand = new BasCategory
+                {
+                    CtgryCd = request.CategoryCode,
+                    Label = request.Label,
+                    Rmrks = request.Description
+                };
+
+                await _categoryRepository.SaveCategory(brand);
+
+                return new ApiResponse { IsOk = true };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse { 
+                    IsOk = false,
+                    Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }]
+                };
+            }
+        }
+
+        public async Task<ApiResponse> GetCategoriesAsync()
+        {
+            try
+            {
+                var categories = await _categoryRepository.GetCategories();
+
+                var categoryVm = new List<CategoryViewModel>();
+
+                foreach (var category in categories)
+                {
+                    categoryVm.Add(new CategoryViewModel
+                    {
+                        CategoryId = category.CtgryId,
+                        CategoryCode = category.CtgryCd,
+                        Label = category.Label,
+                        Remarks = category.Rmrks
+                    });
+                }
+
+                return new ApiResponse { 
+                    IsOk = true,
+                    Results = [categoryVm]
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse { 
+                    IsOk = false, 
+                    Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }]
+                };
+            }
+        }
+
+        public async Task<ApiResponse> GetCategoryByIdAsync(int categoryId)
+        {
+            var apiResponse = new ApiResponse { IsOk = true };
+            try
+            {
+                var category = await _categoryRepository.GetCategoryById(categoryId);
+                apiResponse.Results = [category];
+
+                return new ApiResponse { IsOk = true };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse { 
+                    IsOk = false,
+                    Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }]
+                };
+            }
+        }
+    }
+}

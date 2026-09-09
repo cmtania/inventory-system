@@ -12,23 +12,35 @@ namespace InventorySystem.Service.Repository
             _dbContext = dbContext;
         }
 
-        public List<TrnProduct> GetProducts() { 
-            var products = _dbContext.TrnProducts
-                            .Include(b => b.Brnd)
-                            .Include(c => c.Ctgry)
-                            .Where(p => p.Purge == false)
-                            .ToList();
+        public async Task<List<TrnProduct>> GetProducts()
+        {
+            var products = await _dbContext.TrnProducts
+                             .Include(b => b.Brnd)
+                             .Include(c => c.Ctgry)
+                             .Where(p => p.Purge == false)
+                             .ToListAsync();
 
             return products;
         }
 
-        public TrnProduct GetProduct(int productId)
+        public async Task<List<TrnProduct>> SearchProducts(string term)
         {
-            var product = _dbContext.TrnProducts
+            var products = await _dbContext.TrnProducts
+                        .Where(x => x.PrdctCd.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            x.PrdctNm.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            x.PrdctDscrptn.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .ToListAsync();
+
+            return products;
+        }
+
+        public async Task<TrnProduct> GetProduct(int productId)
+        {
+            var product = await _dbContext.TrnProducts
                             .Include(b => b.Brnd)
                             .Include(c => c.Ctgry)
                             .Where(p => p.Purge == false)
-                            .FirstOrDefault(x => x.PrdctId == productId);
+                            .FirstOrDefaultAsync(x => x.PrdctId == productId);
 
             return product;
         }
@@ -36,12 +48,15 @@ namespace InventorySystem.Service.Repository
         public async Task SaveProduct(TrnProduct product)
         {
             await _dbContext.AddAsync(product);
+
+            await _dbContext.SaveChangesAsync();
+
         }
 
         public async Task UpdateProduct(TrnProduct product)
         {
             product.UpdtDt = DateTime.Now;
-             _dbContext.Update(product);
+            _dbContext.Update(product);
 
             await _dbContext.SaveChangesAsync();
         }

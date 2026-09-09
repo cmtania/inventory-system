@@ -3,7 +3,40 @@
         <a class="navbar-brand" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">
             <i class="fa-solid fa-bars" ></i>
           </a>
+          <div class="app-nav-right" >
+            <ul class="list-unstyled" ngbDropdown display="dynamic" placement="bottom-end">
+              <li class="notif"><i class="fa-solid fa-bell"></i></li>
+              <li class="user-profile" id="user-profile" ngbDropdownToggle>
+                <span class="thumbnail">
+                  <i class="fa-solid fa-user"></i>
+                </span>
+                <span class="user-name">{{role}}</span>
+              </li>
+              <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="user-profile">
+                <div class="dropdown-header">
+                  <span class="thumbnail">
+                    <i class="fa-solid fa-user"></i>
+                  </span>
+                  <div class="details">
+                    <span class="full-name">{{fullName}}</span>
+                    <span class="role">{{role}}</span>
+                  </div>
+                </div>
+                <div class="menu">
+                  <span class="menu__item">
+                    <i class="fa-solid fa-pen-to-square"></i>Edit Profile
+                  </span>
+                  <span class="menu__item" (click)="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>Logout
+                  </span>
+                </div>
+              </div>
+              
+            </ul>
+          </div>
     </div>
   </nav>
   <app-side-nav></app-side-nav>
   <router-outlet></router-outlet>
+
+  

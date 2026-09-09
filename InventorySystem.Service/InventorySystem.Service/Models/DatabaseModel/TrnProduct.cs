@@ -13,7 +13,7 @@ public partial class TrnProduct
 
     public string? PrdctDscrptn { get; set; }
 
-    public int UntPrc { get; set; }
+    public double UntPrc { get; set; }
 
     public int CtgryId { get; set; }
 
