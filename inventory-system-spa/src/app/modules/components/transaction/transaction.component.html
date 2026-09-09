@@ -45,26 +45,41 @@
       </div>
     </div>
 
+    @if (stockError) {
+      <div class="catalog__alert" role="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ stockError }}</span>
+        <button type="button" class="catalog__alert-close" (click)="dismissStockError()" aria-label="Dismiss">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    }
+
     <form [formGroup]="transactionForm">
       <div class="catalog__grid" formArrayName="products">
         @for (p of filteredProducts; track p.ProductId) {
-          <article [formGroupName]="p.index" class="product">
+          <article [formGroupName]="p.index" class="product" [class.product--out]="p.stock <= 0">
             <div class="product__body">
               <span class="micro product__cat">{{ p.Category || 'uncategorized' }}</span>
               <h4 class="product__name">{{ p.ProductName }}</h4>
               <span class="product__price">{{ p.UnitPrice | currency:'PHP':'symbol-narrow' }}</span>
+              <span class="product__stock" [class.product__stock--out]="p.stock <= 0">
+                {{ p.stock > 0 ? p.stock + ' in stock' : 'Out of stock' }}
+              </span>
             </div>
             <div class="product__actions">
               <div class="stepper" role="group" aria-label="Quantity to add">
                 <button type="button" class="stepper__btn" (click)="decreaseProductQuantity(p.index)" aria-label="Decrease quantity">
                   <i class="fa-solid fa-minus"></i>
                 </button>
-                <input type="number" formControlName="Quantity" class="stepper__input" min="1" max="100">
+                <input type="number" formControlName="Quantity" class="stepper__input" min="1" [attr.max]="p.stock">
                 <button type="button" class="stepper__btn" (click)="increaseProductQuantity(p.index)" aria-label="Increase quantity">
                   <i class="fa-solid fa-plus"></i>
                 </button>
               </div>
-              <button type="button" class="btn btn--primary product__add" (click)="addToCart(p, p.index)">
+              <button type="button" class="btn btn--primary product__add"
+                      [disabled]="p.stock <= 0"
+                      (click)="addToCart(p, p.index)">
                 <i class="fa-solid fa-plus"></i> Add
               </button>
             </div>
@@ -167,7 +182,8 @@
           <button type="button" class="btn btn--primary btn--pay"
                   [disabled]="!selectedPaymentTypeId"
                   (click)="processPayment()">
-            <i class="fa-solid fa-credit-card"></i> Pay {{ getDetailsValue('Total') | currency:'PHP':'symbol-narrow' }}
+            <!-- <i class="fa-solid fa-credit-card"></i> -->
+             Pay {{ getDetailsValue('Total') | currency:'PHP':'symbol-narrow' }}
           </button>
         </div>
       </div>

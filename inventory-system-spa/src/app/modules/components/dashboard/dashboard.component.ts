@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { finalize, take, tap } from 'rxjs';
 import { InventoryModel } from '../../model/inventory.model';
 import { InventoryService } from '../../services/inventory.service';
+import { SalesService } from '../../services/sales.service';
 import { Store } from '@ngxs/store';
 import { HideSpinner, ShowSpinner } from '../../state-management/actions/spinner.action';
 
@@ -18,6 +19,14 @@ interface ValuedItem {
   value: number;
 }
 
+type SalesPeriod = 'day' | 'week' | 'month';
+
+interface SalesBar {
+  label: string;
+  value: number;
+  pct: number; // 0..100 relative to the tallest bar
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: false,
@@ -31,6 +40,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private readonly _inventoryService: InventoryService,
+    private readonly _salesService: SalesService,
     private readonly _store: Store,
   ) {}
 
@@ -60,12 +70,32 @@ export class DashboardComponent implements OnInit {
   topValueItems: ValuedItem[] = [];
   categoryStats: CategoryStat[] = [];
 
+  // sales trend
+  salesPeriod: SalesPeriod = 'week';
+  salesLoading = false;
+  salesBars: SalesBar[] = [];
+  salesTotal = 0;
+
   ngOnInit(): void {
     this.loadDashboard();
+    this.loadSales();
   }
 
   refresh(): void {
     this.loadDashboard();
+    this.loadSales();
+  }
+
+  setSalesPeriod(period: SalesPeriod): void {
+    if (period === this.salesPeriod) {
+      return;
+    }
+    this.salesPeriod = period;
+    this.loadSales();
+  }
+
+  get salesPeriodLabel(): string {
+    return { day: 'Today', week: 'This week', month: 'This month' }[this.salesPeriod];
   }
 
   get inStockPct(): number { return this.pct(this.healthyCount); }
@@ -129,6 +159,36 @@ export class DashboardComponent implements OnInit {
       .slice(0, 5);
 
     this.categoryStats = this.buildCategoryStats(items);
+  }
+
+  private loadSales(): void {
+    this.salesLoading = true;
+
+    this._salesService.getSalesTrend(this.salesPeriod).pipe(
+      take(1),
+      tap((resp: any) => {
+        const rows: any[] = resp?.IsOk ? (resp.Results?.[0] ?? []) : [];
+        this.applySalesBars(rows);
+      }),
+      finalize(() => {
+        this.salesLoading = false;
+      })
+    ).subscribe();
+  }
+
+  private applySalesBars(rows: any[]): void {
+    const series = (rows ?? []).map(r => ({
+      label: (r.Label ?? r.label ?? '').toString(),
+      value: this.num(r.Total ?? r.total ?? r.Value ?? r.value),
+    }));
+
+    const max = series.reduce((m, s) => Math.max(m, s.value), 0);
+
+    this.salesBars = series.map(s => ({
+      ...s,
+      pct: max ? (s.value / max) * 100 : 0,
+    }));
+    this.salesTotal = series.reduce((sum, s) => sum + s.value, 0);
   }
 
   private buildCategoryStats(items: InventoryModel[]): CategoryStat[] {

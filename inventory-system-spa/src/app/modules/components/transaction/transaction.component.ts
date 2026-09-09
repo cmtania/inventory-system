@@ -28,6 +28,11 @@ export class TransactionComponent implements OnInit, OnDestroy {
   private searchSub?: Subscription;
   private readonly productIndexMap = new Map<any, number>();
 
+  // Stock on hand per product, and the transient "over stock" warning
+  private readonly stockMap = new Map<any, number>();
+  stockError: string | null = null;
+  private stockErrorTimer?: ReturnType<typeof setTimeout>;
+
   constructor(
     private fb: FormBuilder,
     private readonly _productService: ProductService,
@@ -63,6 +68,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.searchSub?.unsubscribe();
+    clearTimeout(this.stockErrorTimer);
   }
 
   get carts(): FormArray {
@@ -80,19 +86,74 @@ export class TransactionComponent implements OnInit, OnDestroy {
   addToCart(item: any, index: number): void {
     const unitPrice = this.getProductValue(index, 'UnitPrice');
     const quantity = this.getProductValue(index, 'Quantity');
+    const productId = this.getProductValue(index, 'ProductId');
+    const productName = this.getProductValue(index, 'ProductName');
+
+    const stock = this.stockMap.get(productId) ?? 0;
+    const addQty = this.num(quantity);
+    const alreadyInCart = this.cartQtyForProduct(productId);
+
+    if (stock <= 0) {
+      this.showStockError(`"${productName}" is out of stock.`);
+      return;
+    }
+
+    if (alreadyInCart + addQty > stock) {
+      const remaining = Math.max(0, stock - alreadyInCart);
+      this.showStockError(
+        `Cannot add ${addQty} × "${productName}" — only ${remaining} of ${stock} in stock` +
+        (alreadyInCart ? ` (${alreadyInCart} already in cart).` : '.')
+      );
+      return;
+    }
+
+    // If the product is already in the cart, top up that line instead of duplicating it
+    const existing = this.carts.controls.find(c => c.get('ProductId')?.value === productId);
+    if (existing) {
+      const newQty = this.num(existing.get('Quantity')?.value) + addQty;
+      existing.get('Quantity')?.setValue(newQty);
+      existing.get('RowTotal')?.setValue(newQty * this.num(existing.get('UnitPrice')?.value));
+      this.dismissStockError();
+      this.calculateTotal();
+      return;
+    }
 
     const selectedItem = this.fb.group({
       ItemId: [this.carts.length + 1],
-      ProductName: [this.getProductValue(index, 'ProductName')],
+      ProductId: [productId],
+      ProductName: [productName],
       Description: [this.getProductValue(index, 'Description')],
-      Quantity: [quantity, Validators.required],
+      Quantity: [addQty, Validators.required],
       UnitPrice: [unitPrice],
-      RowTotal: [(+unitPrice * +quantity)]
+      RowTotal: [(+unitPrice * addQty)]
     });
 
     this.carts.push(selectedItem);
-
+    this.dismissStockError();
     this.calculateTotal();
+  }
+
+  private cartQtyForProduct(productId: any): number {
+    return this.carts.controls.reduce(
+      (sum, c) => c.get('ProductId')?.value === productId ? sum + this.num(c.get('Quantity')?.value) : sum,
+      0
+    );
+  }
+
+  private showStockError(message: string): void {
+    this.stockError = message;
+    clearTimeout(this.stockErrorTimer);
+    this.stockErrorTimer = setTimeout(() => (this.stockError = null), 5000);
+  }
+
+  dismissStockError(): void {
+    this.stockError = null;
+    clearTimeout(this.stockErrorTimer);
+  }
+
+  private num(value: any): number {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
   }
 
   deleteCartItem(index: number): void {
@@ -101,13 +162,33 @@ export class TransactionComponent implements OnInit, OnDestroy {
   }
 
   quantityChange(index: number): void {
-    const control = this.carts.at(index).get('Quantity');
-    const unitPrice = this.carts.at(index).get('UnitPrice');
-    const rowTotal = control?.value * unitPrice?.value;
-    this.carts.at(index).get('RowTotal')?.setValue(rowTotal);
+    const line = this.carts.at(index);
+    const control = line.get('Quantity');
+    const unitPrice = line.get('UnitPrice');
+    const productId = line.get('ProductId')?.value;
+    const productName = line.get('ProductName')?.value;
+
+    let qty = Math.floor(this.num(control?.value));
+    if (qty < 1) {
+      qty = 1;
+    }
+
+    const stock = this.stockMap.get(productId);
+    if (stock != null) {
+      const otherLines = this.cartQtyForProduct(productId) - this.num(control?.value);
+      if (otherLines + qty > stock) {
+        qty = Math.max(1, stock - otherLines);
+        this.showStockError(`Adjusted to ${qty} — only ${stock} of "${productName}" in stock.`);
+      }
+    }
+
+    control?.setValue(qty, { emitEvent: false });
+
+    const rowTotal = qty * this.num(unitPrice?.value);
+    line.get('RowTotal')?.setValue(rowTotal);
     this.calculateTotal();
   }
-  
+
   decreaseQuantity(index: number): void {
     const control = this.carts.at(index).get('Quantity');
     if (control && control.value > 1) {
@@ -117,11 +198,26 @@ export class TransactionComponent implements OnInit, OnDestroy {
   }
 
   increaseQuantity(index: number): void {
-    const control = this.carts.at(index).get('Quantity');
-    if (control) {
-      control.setValue(control.value + 1);
-      this.quantityChange(index);
+    const line = this.carts.at(index);
+    const control = line.get('Quantity');
+    if (!control) {
+      return;
     }
+
+    const productId = line.get('ProductId')?.value;
+    const stock = this.stockMap.get(productId);
+    const next = this.num(control.value) + 1;
+
+    if (stock != null) {
+      const otherLines = this.cartQtyForProduct(productId) - this.num(control.value);
+      if (otherLines + next > stock) {
+        this.showStockError(`Only ${stock} of "${line.get('ProductName')?.value}" in stock.`);
+        return;
+      }
+    }
+
+    control.setValue(next);
+    this.quantityChange(index);
   }
 
 
@@ -171,6 +267,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
       ProductName: item.ProductName,
       Category: item.Category,
       UnitPrice: item.UnitPrice,
+      stock: this.num(item.Quantity),
     }));
   }
 
@@ -194,6 +291,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
                 UnitPrice: [item.UnitPrice]
               });
               this.productIndexMap.set(item.ProductId, this.products.length);
+              this.stockMap.set(item.ProductId, this.num(item.Quantity));
               this.products.push(productGroup);
             });
             this.applyFilter();
@@ -306,9 +404,20 @@ export class TransactionComponent implements OnInit, OnDestroy {
 
   increaseProductQuantity(index: number): void {
     const control = this.products.at(index).get('Quantity');
-    if (control) {
-      control.setValue(control.value + 1);
+    if (!control) {
+      return;
     }
+
+    const productId = this.getProductValue(index, 'ProductId');
+    const stock = this.stockMap.get(productId) ?? 0;
+    const next = this.num(control.value) + 1;
+
+    if (next > stock) {
+      this.showStockError(`Only ${stock} of "${this.getProductValue(index, 'ProductName')}" in stock.`);
+      return;
+    }
+
+    control.setValue(next);
   }
 
   // Add clear cart method
