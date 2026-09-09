@@ -23,6 +23,15 @@ namespace InventorySystem.Service.Controllers
             return Ok(products);
         }
 
+        [Route("search/{term}")]
+        [HttpGet]
+        public async Task<IActionResult> SearchProductsAsync(string term)
+        {
+            var products = await _productService.SearchProductAsync(term);
+
+            return Ok(products);
+        }
+
         [Route("{productId}")]
         [HttpGet]
         public async Task<IActionResult> GetProductAsync(int productId)

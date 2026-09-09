@@ -9,6 +9,7 @@ namespace InventorySystem.Service.Interfaces
     {
         Task<ApiResponse> GetProductsAsync();
         Task<ApiResponse> GetProductByIdAsync(int productId);
+        Task<ApiResponse> SearchProductAsync(string term);
         Task<ApiResponse> SaveProductAsync(SaveProductRequest product);
         Task<ApiResponse> UpdateProductAsync(ProductRequestDto product);
         Task<ApiResponse> DeleteProductAsync(int productId);

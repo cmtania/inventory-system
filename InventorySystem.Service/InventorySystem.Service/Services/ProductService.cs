@@ -18,7 +18,6 @@ namespace InventorySystem.Service.Services
 
         public async Task<ApiResponse> GetProductsAsync()
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var products = await _productRepository.GetProducts();
@@ -54,9 +53,46 @@ namespace InventorySystem.Service.Services
                 };
             }
         }
+
+        public async Task<ApiResponse> SearchProductAsync(string term)
+        {
+            try
+            {
+                var products = await _productRepository.SearchProducts(term);
+                var productsVm = new List<ProductViewModel>();
+
+                foreach (var prod in products)
+                {
+                    productsVm.Add(new ProductViewModel
+                    {
+                        ProductId = prod.PrdctId,
+                        ProductCode = prod.PrdctCd,
+                        ProductName = prod.PrdctNm,
+                        UnitPrice = prod.UntPrc,
+                        ProductDescription = prod.PrdctDscrptn,
+                        BrandId = prod.BrndId,
+                        Brand = prod.Brnd.Label,
+                        CategoryId = prod.CtgryId,
+                        Category = prod.Ctgry.Label
+                    });
+                }
+
+                return new ApiResponse { IsOk = true, Results = [productsVm] };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse
+                {
+                    IsOk = false,
+                    Messages = [ new ResponseMessage
+                       { Title = ProductConstants.TRAN_GetProduct,
+                          Message = ex.InnerException.Message
+                       }]
+                };
+            }
+        }
         public async Task<ApiResponse> GetProductByIdAsync(int productId)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var product = await _productRepository.GetProduct(productId);
