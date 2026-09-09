@@ -23,6 +23,17 @@ namespace InventorySystem.Service.Repository
             return products;
         }
 
+        public async Task<List<TrnProduct>> SearchProducts(string term)
+        {
+            var products = await _dbContext.TrnProducts
+                        .Where(x => x.PrdctCd.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            x.PrdctNm.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            x.PrdctDscrptn.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .ToListAsync();
+
+            return products;
+        }
+
         public async Task<TrnProduct> GetProduct(int productId)
         {
             var product = await _dbContext.TrnProducts
