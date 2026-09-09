@@ -18,7 +18,6 @@ namespace InventorySystem.Service.Services
 
         public async Task<ApiResponse> SaveBrandAsync(SaveBrandRequestDto request)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var brand = new BasBrand
@@ -32,29 +31,30 @@ namespace InventorySystem.Service.Services
 
                 var brandsVm = new List<BrandViewModel>();
 
-                return apiResponse;
+                return new ApiResponse { IsOk = true };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
-                return apiResponse;
+                return new ApiResponse { 
+                    IsOk = false,
+                    Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }]
+                };
             }
         }
 
         public async Task<ApiResponse> UpdateBrandAsync(UpdateBrandRequestDto request)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var brandToUpdate = await _brandRepository.GetBrandById(request.BrandId);
                 if (brandToUpdate == null)
                 {
-                    apiResponse.IsOk = false;
                     var errorMessage = new ResponseMessage { Title = BrandConstants.TRAN_SaveBrand, Message = CommonConstants.TRAN_RecordMissing };
-                    apiResponse.Messages = [errorMessage];
-
-                    return apiResponse;
+                    return new ApiResponse
+                    {
+                        IsOk = false,
+                        Messages = [errorMessage]
+                    };
                 }
 
                 brandToUpdate.BrndCd = request.BrandCode;
@@ -65,15 +65,15 @@ namespace InventorySystem.Service.Services
 
                 await _brandRepository.UpdateBrand(brandToUpdate);
 
-                return apiResponse;
+                return new ApiResponse { IsOk = true };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
                 var errorMessage = new ResponseMessage { Title = ProductConstants.TRAN_UpdateProduct, Message = ex.InnerException.Message };
-                apiResponse.Messages = [errorMessage];
-
-                return apiResponse;
+                return new ApiResponse {
+                    IsOk = false,
+                    Messages = [errorMessage]
+                };
             }
         }
 

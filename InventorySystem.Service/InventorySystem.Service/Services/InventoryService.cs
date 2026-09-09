@@ -56,7 +56,6 @@ namespace InventorySystem.Service.Services
         }
         public async Task<ApiResponse> GetInvByIdAsync(int inventoryId)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var inventory = await _inventoryRepository.GetInventoryById(inventoryId);
@@ -84,7 +83,6 @@ namespace InventorySystem.Service.Services
         }
         public async Task<ApiResponse> SaveInventoryAsync(SaveInventoryRequestDto inventory)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var inventoryModel = new TrnInventory
@@ -97,16 +95,18 @@ namespace InventorySystem.Service.Services
 
                 await _inventoryRepository.SaveInventory(inventoryModel);
 
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }];
-
-                return apiResponse;
+                return new ApiResponse
+                {
+                    IsOk = true,
+                    Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ProductConstants.TRAN_SaveSuccessMessage }]
+                };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }];
-
-                return apiResponse;
+                return new ApiResponse {
+                    IsOk= false,
+                    Messages = [new ResponseMessage { Title = ProductConstants.TRAN_SaveProduct, Message = ex.InnerException.Message }]
+                };
             }
         }
         public async Task<ApiResponse> UpdateInventoryAsync(SaveInventoryRequestDto invRequest)

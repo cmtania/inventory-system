@@ -17,7 +17,6 @@ namespace InventorySystem.Service.Services
 
         public async Task<ApiResponse> SaveCategoryAsync(SaveCategoryRequestDto request)
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var brand = new BasCategory
@@ -29,19 +28,19 @@ namespace InventorySystem.Service.Services
 
                 await _categoryRepository.SaveCategory(brand);
 
-                return apiResponse;
+                return new ApiResponse { IsOk = true };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
-                return apiResponse;
+                return new ApiResponse { 
+                    IsOk = false,
+                    Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }]
+                };
             }
         }
 
         public async Task<ApiResponse> GetCategoriesAsync()
         {
-            var apiResponse = new ApiResponse { IsOk = true };
             try
             {
                 var categories = await _categoryRepository.GetCategories();
@@ -58,15 +57,18 @@ namespace InventorySystem.Service.Services
                         Remarks = category.Rmrks
                     });
                 }
-                apiResponse.Results = [categoryVm];
 
-                return apiResponse;
+                return new ApiResponse { 
+                    IsOk = true,
+                    Results = [categoryVm]
+                };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
-                return apiResponse;
+                return new ApiResponse { 
+                    IsOk = false, 
+                    Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }]
+                };
             }
         }
 
@@ -78,13 +80,14 @@ namespace InventorySystem.Service.Services
                 var category = await _categoryRepository.GetCategoryById(categoryId);
                 apiResponse.Results = [category];
 
-                return apiResponse;
+                return new ApiResponse { IsOk = true };
             }
             catch (Exception ex)
             {
-                apiResponse.IsOk = false;
-                apiResponse.Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }];
-                return apiResponse;
+                return new ApiResponse { 
+                    IsOk = false,
+                    Messages = [new ResponseMessage { Title = "Error", Message = ex.Message }]
+                };
             }
         }
     }
